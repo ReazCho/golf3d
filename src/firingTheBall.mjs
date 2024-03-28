@@ -56,10 +56,18 @@ let firingTheBall = {
   direction: 0,
   angle: 0
 };
+
+let isMusicPlaying = false; // Flag to track playback
+
 document.body.addEventListener('click', (event) => {
   console.log("Clicked at X:", event.clientX, "Y:", event.clientY);
-  playMusic('./music/song.mp3'); // Call playMusic function here
+
+  if (!isMusicPlaying) { // Only play if not already playing
+    playMusic('./music/song.mp3');
+    isMusicPlaying = true; // Set flag to true after starting playback
+  }
 });
+
 function shoot() {
   // Ensure ballBody is active before applying impulse
   if (ballBody && ballBody.type === 2) {
@@ -70,7 +78,6 @@ function shoot() {
     console.error("Error: ballBody not defined");
     return;
   }
-
   playRandomSoundEffect();
 
   let calPower = firingTheBall.power * 2;
