@@ -7,7 +7,7 @@ import { Ramp } from "./BuildingBlocks/Ramp.mjs";
 import {BuildingBlock} from "./BuildingBlocks/BuildingBlock.mjs";
 import { MovingPlatform } from "./BuildingBlocks/MovingPlatform.mjs";
 //Visuals for the game
-import {Skybox, skybox_texture} from "./BuildingBlocks/Visuals.mjs";
+import {Skybox, skybox_texture, materials} from "./BuildingBlocks/Visuals.mjs";
 import { firingTheBall } from "./firingTheBall.mjs";
 
 let ballMesh = null;
