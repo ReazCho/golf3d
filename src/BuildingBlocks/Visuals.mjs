@@ -22,4 +22,14 @@ class Skybox {
         engine.scene.add(this.mesh)
     }
 }
-export {Skybox, skybox_texture}
+//simply use materials.xmaterial or materials["xmaterial"] and it will return a material for a THREE.js mesh
+let materials = {
+    BrickConcrete: new THREE.MeshPhongMaterial({color: 0xffffff, map: new THREE.TextureLoader().load('./images/LiminalTextureLib/BrickConcrete1.jpg')}),
+    Concrete1: new THREE.MeshPhongMaterial({color: 0xffffff, map: new THREE.TextureLoader().load('./images/LiminalTextureLib/Concrete1.jpg')}),
+    Concrete2: new THREE.MeshPhongMaterial({color: 0xffffff, map: new THREE.TextureLoader().load('./images/LiminalTextureLib/Concrete3.jpg')}),
+    Grass: new THREE.MeshPhongMaterial({color: 0xffffff, map: new THREE.TextureLoader().load('./images/LiminalTextureLib/Grass1.jpg')}),
+    Metal1: new THREE.MeshPhongMaterial({color: 0xffffff, map: new THREE.TextureLoader().load('./images/LiminalTextureLib/Metal1.jpg')}),
+    Planks1: new THREE.MeshPhongMaterial({color: 0xffffff, map: new THREE.TextureLoader().load('./images/LiminalTextureLib/Planks1.jpg')}),
+    Wood: new THREE.MeshPhongMaterial({color: 0xffffff, map: new THREE.TextureLoader().load('./images/LiminalTextureLib/Wood2.jpg')}),
+}
+export {Skybox, skybox_texture, materials}
