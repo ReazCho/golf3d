@@ -1,13 +1,13 @@
 import * as THREE from "three.js";
 import * as CANNON from "cannon-es";
 import { engine } from "../engine.mjs";
+import { materials } from "./Visuals.mjs";
 
 class Cylinder {
     constructor(x, y, z, radius, length) {
         // Block visual representation
         var geometry = new THREE.CylinderGeometry(radius, radius, length, 32);
-        var material = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
-        var cylinder = new THREE.Mesh(geometry, material); // Corrected variable name
+        var cylinder = new THREE.Mesh(geometry, materials.Concrete2); // Corrected variable name
         cylinder.position.set(x, y, z);
         engine.scene.add(cylinder); // Corrected variable name
 
@@ -22,6 +22,7 @@ class Cylinder {
         // cylinderShape.transformAllPoints(translation, quat);
         cylinderBody.addShape(cylinderShape);
         cylinderBody.position.set(x, y, z);
+        console.log(cylinderBody.position, cylinder.position);
         cylinderBody.type = CANNON.Body.STATIC;
         engine.cannonjs_world.addBody(cylinderBody);
     }

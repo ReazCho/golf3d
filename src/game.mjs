@@ -106,8 +106,8 @@ function initGame() {
     
     new BuildingBlock(30, -10, 0, 40, 10, 20);
 
-    new Cylinder(40, -6, 2, 2, 5)
-    new MovingPlatform(15, 40, 0, 30, 30, 30, 10, 10, 10);
+    new MovingPlatform(15, 20, 20, 30, 30, 30, 20, 1, 15);
+    new Cylinder(25, 0, 2, 5, 5);
 
     // Set custom update function
     engine.update = (() => {
