@@ -32,7 +32,9 @@ function createBall(x, y, z) {
 
     // Create visual representations (meshes)
     const ballGeometry = new THREE.SphereGeometry(1, 32, 32);
-    const ballMaterial = new THREE.MeshPhongMaterial({ color: 0xffff00 });
+    
+    // It is golf. The ball must be white
+    const ballMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff });
     ballMesh = new THREE.Mesh(ballGeometry, ballMaterial);
 
     window.ballMesh = ballMesh;
@@ -58,13 +60,17 @@ function createGround() {
     engine.scene.add(groundMesh);
 }
 
-let time = 0;
-
+let time = 0, obx = 0, oby = 0, obz = 0;
+let controls = null;
 function initGame() {
+    //Setup game
+    createBall(10, 30, 0);
+
     // Orbit controls
     if(orbitControls) {
         const OrbitControls = new OrbitControls_(THREE);
-        const controls = new OrbitControls(engine.camera, engine.canvas2d);
+        controls = new OrbitControls(engine.camera, engine.canvas2d);
+        controls.target = ballMesh.position;
     }
 
     // Set up camera
@@ -72,7 +78,7 @@ function initGame() {
     engine.camera.lookAt(0, 10, 0);
     
     //change far frustum plane to account for skybox
-    engine.far = 10000
+    engine.far = 10000;
 
     // Lighting
 
@@ -86,9 +92,10 @@ function initGame() {
     engine.scene.add(directionalLight);
 
     //Setup visuals
-    const skybox = new Skybox()
-    //Setup game
-    createBall(10, 30, 0);
+    const skybox = new Skybox();
+
+    // Adds a ground
+    new BuildingBlock(0, -10, 0, 1000, 1, 1000);
 
     // createGround();
     const block1 = new BuildingBlock(0, 5, 0, 20, 10, 20);
@@ -96,32 +103,50 @@ function initGame() {
 
     // new BuildingBlock(0, 5, 0, 20, 10, 20);
     new Ramp(16.5, 2.5, 0, 20, Math.PI, Math.PI/4);
-    new Ramp(40, -5, 0, 20, Math.PI/2, 0);
+    new Ramp(40, -5.2, 0, 20, Math.PI/2, 0);
     
     new BuildingBlock(30, -10, 0, 40, 10, 20);
 
-    new MovingPlatform(10, 15, 0, 30, 30, 30, 10, 10, 10);
+    new MovingPlatform(15, 40, 0, 30, 30, 30, 10, 10, 10);
     // Set custom update function
     engine.update = (() => {
         time++;
-        
+        controls.update();
         // Update ball position
         ballMesh.position.copy(ballBody.position);
         
         // Makes the ball static when it isn't moving
         if(time%100 == 0) {
-            let error = 
-            (Math.abs(ballMesh.position.x) - Math.abs(oldBallPosision.x))+
-            (Math.abs(ballMesh.position.y) - Math.abs(oldBallPosision.y))+
-            (Math.abs(ballMesh.position.z) - Math.abs(oldBallPosision.z));
+            let error = 0, bx = Math.abs(ballMesh.position.x), by = Math.abs(ballMesh.position.y), bz = Math.abs(ballMesh.position.z);
+
+            if(bx - obx >= 0) {
+                error = bx - obx;
+            } else {
+                error = bx + obx;
+            }
+
+            if(by - oby >= 0) {
+                error += by - oby;
+            } else {
+                error += by + oby;
+            }
+
+            if(bz - obz >= 0) {
+                error += bz - obz;
+            } else {
+                error += bz + obz;
+            }
             
-            if(error < 0.) {
+            if(error < 1) {
                 ballBody.type = CANNON.Body.STATIC;
                 oldBallPosision = {x: 0, y: 0, z: 0};
             }
 
-            oldBallPosision = ballMesh.position.clone();;
+            obx = Math.abs(ballMesh.position.x), oby = Math.abs(ballMesh.position.y), obz = Math.abs(ballMesh.position.z);
         }
+
+        // Gets the angle between the camera and the ball so you can shoot at the direction you are looking
+        firingTheBall.direction = Math.atan2(ballMesh.position.z - engine.camera.position.z, ballMesh.position.x - engine.camera.position.x);
 
         // ballMesh.quaternion.copy(ballBody.quaternion);
     });
@@ -135,7 +160,7 @@ function initGame() {
     });
     
     engine.onmouseup = () => {
-        // CUSTOM MOUSE UP
+        // firingTheBall.Shoot();
     }
 }
 
