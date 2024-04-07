@@ -1,7 +1,16 @@
 import * as THREE from "three.js";
 import * as CANNON from "cannon-es";
-import { map } from "lodash";
+import { playRandomSoundEffect, playMusic } from "./Sounds.mjs";
+import { engine } from "./engine.mjs";
 
+let firingTheBall = {
+    power: 1,
+    direction: 0,
+    Shoot: () => {shoot()}
+};
+
+
+// Create UI elements
 let inputs = document.createElement("div");
 inputs.id = "inputs";
 inputs.style.position = "absolute";
@@ -16,77 +25,56 @@ let power = document.createElement("input");
 power.type = "range";
 power.id = "power";
 power.min = 0.1;
-power.max = 1;
-power.step = 0.025;
+power.max = 100;
+power.step = 0.1
+power.value = 1;
 addLabel("power", "Power:", inputs);
 inputs.appendChild(power);
 
-let direction = document.createElement("input");
-direction.type = "range";
-direction.id = "direction";
-direction.min = 0;
-direction.max = 360;
-direction.value = 0.1;
-direction.step = 1;
-addLabel("direction", "Direction:", inputs);
-inputs.appendChild(direction);
 
-let angle = document.createElement("input");
-angle.type = "range";
-angle.id = "angle";
-angle.min = 0;
-angle.max = 1;
-angle.value = 0;
-angle.step = 0.01;
-addLabel("angle", "Angle:", inputs);
-inputs.appendChild(angle);
+let shootB = document.createElement("button");
+shootB.id = "shootB";
+shootB.innerHTML = "Shoot";
+shootB.onclick = shoot;
+inputs.appendChild(shootB);
 
-let button = document.createElement("button")
-button.id = "shoot";
-button.innerHTML = "Shoot";
-button.onclick = shoot;
-inputs.appendChild(button);
+let isMusicPlaying = false; // Flag to track playback
 
-let firingTheBall = {
-    Shoot: () => {shoot()},
-    power: 0.1,
-    direction: 0,
-    angle: 0
-};
+document.body.addEventListener('click', (event) => {
+  console.log("Clicked at X:", event.clientX, "Y:", event.clientY);
+
+  if (!isMusicPlaying) { // Only play if not already playing
+    playMusic('./music/song.mp3');
+    isMusicPlaying = true; // Set flag to true after starting playback
+  }
+});
 
 function shoot() {
+    playRandomSoundEffect();
+
     // Is STATIC
-    if(ballBody.type == 2) {
-        ballBody.type = 1;
+    if(ballBody.type == CANNON.Body.STATIC) {
+        ballBody.type = CANNON.Body.DYNAMIC;
     }
 
-    let calPower = firingTheBall.power * 2;
-    let calAngle = firingTheBall.angle;
-    let calDirection = (firingTheBall.direction - 180) * Math.PI/180;
-
+    let calPower = firingTheBall.power;
+    let calDirection = firingTheBall.direction;
+    
     // let impulse = new CANNON.Vec3(velocityX, velocityY, velocityZ);
-    let impulse = new CANNON.Vec3(Math.cos(calDirection) * calPower, calAngle * calPower * 10, Math.sin(calDirection) * calPower);
+    let impulse = new CANNON.Vec3(Math.cos(calDirection) * calPower, 0, Math.sin(calDirection) * calPower);
     let relativePoint = new CANNON.Vec3();
     ballBody.applyImpulse(impulse, relativePoint);
 }
 
 power.addEventListener("input", () => {
-    firingTheBall.power = parseFloat(power.value)
-})
-
-direction.addEventListener("input", () => {
-    firingTheBall.direction = parseFloat(direction.value)
-})
-
-angle.addEventListener("input", () => {
-    firingTheBall.angle = parseFloat(angle.value)
+    firingTheBall.power = parseFloat(power.value);
 })
 
 function addLabel(id, text, where) {
-    let label = document.createElement("label");
-    label.for = id;
-    label.innerHTML = text;
-    where.appendChild(label);
+  let label = document.createElement("label");
+  label.for = id;
+  label.innerHTML = text;
+  where.appendChild(label);
 }
 
-export {firingTheBall};
+export { firingTheBall };
