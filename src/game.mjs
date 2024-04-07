@@ -36,7 +36,7 @@ function createBall(x, y, z) {
     
     // It is golf. The ball must be white
     const ballMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff });
-    ballMesh = new THREE.Mesh(ballGeometry, ballMaterial);
+    ballMesh = new THREE.Mesh(ballGeometry, materials.GolfBall);
 
     window.ballMesh = ballMesh;
     window.ballBody = ballBody;
