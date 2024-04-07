@@ -60,12 +60,16 @@ function createGround() {
 }
 
 let time = 0, obx = 0, oby = 0, obz = 0;
-
+let controls = null;
 function initGame() {
+    //Setup game
+    createBall(10, 30, 0);
+
     // Orbit controls
     if(orbitControls) {
         const OrbitControls = new OrbitControls_(THREE);
-        const controls = new OrbitControls(engine.camera, engine.canvas2d);
+        controls = new OrbitControls(engine.camera, engine.canvas2d);
+        controls.target = ballMesh.position;
     }
 
     // Set up camera
@@ -92,9 +96,6 @@ function initGame() {
     // Adds a ground
     new BuildingBlock(0, -10, 0, 1000, 1, 1000);
 
-    //Setup game
-    createBall(10, 30, 0);
-
     // createGround();
     const block1 = new BuildingBlock(0, 5, 0, 20, 10, 20);
     // const block2 = new BuildingBlock(20, 0, 0, 50, 10, 20);
@@ -109,7 +110,7 @@ function initGame() {
     // Set custom update function
     engine.update = (() => {
         time++;
-        
+        controls.update();
         // Update ball position
         ballMesh.position.copy(ballBody.position);
         
