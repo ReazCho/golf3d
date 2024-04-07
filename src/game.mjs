@@ -10,7 +10,8 @@ import { Cylinder } from "./BuildingBlocks/Cylinder.mjs";
 //Visuals for the game
 import {Skybox, skybox_texture, materials} from "./BuildingBlocks/Visuals.mjs";
 import { firingTheBall } from "./firingTheBall.mjs";
-import { Sounds } from "./Sounds.mjs";
+import { playRandomSoundEffect, Sounds } from "./Sounds.mjs";
+import { createPineTree } from "./BGAssets/pine.mjs";
 
 let ballMesh = null;
 let ballBody = null;
@@ -108,6 +109,9 @@ function initGame() {
     new MovingPlatform(15, 20, 20, 30, 30, 30, 20, 1, 15);
     new Cylinder(25, 0, 2, 5, 5);
 
+
+    createPineTree(engine.scene, 25, 5, 2);
+    let lastDX, lastDY, lastDZ;
     // Set custom update function
     engine.update = (() => {
         time++;
@@ -115,6 +119,15 @@ function initGame() {
         // Update ball position
         ballMesh.position.copy(ballBody.position);
         
+        let bounceGranica = 2;
+        if(Math.abs(lastDX - ballBody.velocity.x) > bounceGranica || 
+        Math.abs(lastDY - ballBody.velocity.y) > bounceGranica ||
+        Math.abs(lastDZ - ballBody.velocity.z) > bounceGranica) {
+            console.log("TUP");
+        }
+        lastDX = ballBody.velocity.x;
+        lastDY = ballBody.velocity.y;
+        lastDZ = ballBody.velocity.z;
         // Makes the ball static when it isn't moving
         if(time%100 == 0) {
             let error = 0, bx = Math.abs(ballMesh.position.x), by = Math.abs(ballMesh.position.y), bz = Math.abs(ballMesh.position.z);
