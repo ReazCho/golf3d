@@ -22,14 +22,26 @@ class Skybox {
         engine.scene.add(this.mesh)
     }
 }
+
+function RegisterNewMaterial(name, path, tilingx, tilingy, tint) {
+    let _tex = new THREE.TextureLoader().load(path)
+    _tex.wrapS = THREE.RepeatWrapping
+    _tex.wrapT = THREE.RepeatWrapping
+    _tex.repeat.set(tilingx, tilingy)
+    materials[name] = new THREE.MeshPhongMaterial({color: tint, map: _tex})
+}
+
+function loadLiminalTextureLib() {
+    RegisterNewMaterial("BrickConcrete", './images/LiminalTextureLib/BrickConcrete1.jpg', 1, 1, 0xffffff);
+    RegisterNewMaterial("Concrete1", './images/LiminalTextureLib/Concrete1.jpg', 1, 1, 0xffffff);
+    RegisterNewMaterial("Concrete2", './images/LiminalTextureLib/Concrete3.jpg', 1, 1, 0xffffff);
+    RegisterNewMaterial("Grass", './images/LiminalTextureLib/Grass1.jpg', 1, 1, 0xffffff);
+    RegisterNewMaterial("Metal1", './images/LiminalTextureLib/Metal1.jpg', 1, 1, 0xffffff);
+    RegisterNewMaterial("Planks1", './images/LiminalTextureLib/Planks1.jpg', 1, 1, 0xffffff);
+    RegisterNewMaterial("Wood", './images/LiminalTextureLib/Wood2.jpg', 1, 1, 0xffffff);
+}
 //simply use materials.xmaterial or materials["xmaterial"] and it will return a material for a THREE.js mesh
 let materials = {
-    BrickConcrete: new THREE.MeshPhongMaterial({color: 0xffffff, map: new THREE.TextureLoader().load('./images/LiminalTextureLib/BrickConcrete1.jpg')}),
-    Concrete1: new THREE.MeshPhongMaterial({color: 0xffffff, map: new THREE.TextureLoader().load('./images/LiminalTextureLib/Concrete1.jpg')}),
-    Concrete2: new THREE.MeshPhongMaterial({color: 0xffffff, map: new THREE.TextureLoader().load('./images/LiminalTextureLib/Concrete3.jpg')}),
-    Grass: new THREE.MeshPhongMaterial({color: 0xffffff, map: new THREE.TextureLoader().load('./images/LiminalTextureLib/Grass1.jpg')}),
-    Metal1: new THREE.MeshPhongMaterial({color: 0xffffff, map: new THREE.TextureLoader().load('./images/LiminalTextureLib/Metal1.jpg')}),
-    Planks1: new THREE.MeshPhongMaterial({color: 0xffffff, map: new THREE.TextureLoader().load('./images/LiminalTextureLib/Planks1.jpg')}),
-    Wood: new THREE.MeshPhongMaterial({color: 0xffffff, map: new THREE.TextureLoader().load('./images/LiminalTextureLib/Wood2.jpg')}),
+    
 }
-export {Skybox, skybox_texture, materials}
+export {Skybox, skybox_texture, materials, loadLiminalTextureLib}
