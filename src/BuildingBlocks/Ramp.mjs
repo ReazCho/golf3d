@@ -1,6 +1,7 @@
 import * as THREE from "three.js";
 import * as CANNON from "cannon-es";
 import { engine } from "../engine.mjs";
+import { materials } from "./Visuals.mjs";
 
 class Ramp {
     constructor(x, y, z, width, dir, angle) {
@@ -9,13 +10,9 @@ class Ramp {
         var rampGeometry = new THREE.BoxGeometry(width, 1, width);
         var borderGeometry = new THREE.BoxGeometry(width, 3, 2);
 
-        var grassMaterial = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
-        var woodMaterial = new THREE.MeshPhongMaterial({ color: 0x964B00 });
-
-
-        var cube = new THREE.Mesh(rampGeometry, grassMaterial);
-        var border1 = new THREE.Mesh(borderGeometry, woodMaterial);
-        var border2 = new THREE.Mesh(borderGeometry, woodMaterial);
+        var cube = new THREE.Mesh(rampGeometry, materials.Grass);
+        var border1 = new THREE.Mesh(borderGeometry, materials.Wood);
+        var border2 = new THREE.Mesh(borderGeometry, materials.Wood);
 
         border1.position.set(0, 0, 0 - width/2);
         border2.position.set(0, 0, 0 + width/2);

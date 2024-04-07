@@ -94,16 +94,13 @@ function initGame() {
     //Setup visuals
     const skybox = new Skybox();
 
-    // Adds a ground
-    new BuildingBlock(0, -10, 0, 1000, 1, 1000);
-
     // createGround();
     const block1 = new BuildingBlock(0, 5, 0, 20, 10, 20);
     // const block2 = new BuildingBlock(20, 0, 0, 50, 10, 20);
 
     // new BuildingBlock(0, 5, 0, 20, 10, 20);
     new Ramp(16.5, 2.5, 0, 20, Math.PI, Math.PI/4);
-    new Ramp(40, -5.2, 0, 20, Math.PI/2, 0);
+    new Ramp(33, -5.2, 0, 20, 0, 0);
     
     new BuildingBlock(30, -10, 0, 40, 10, 20);
 
