@@ -1,5 +1,6 @@
 import * as THREE from "three.js";
 import * as CANNON from "cannon-es";
+import { playRandomSoundEffect, playMusic } from "./Sounds.mjs";
 import { engine } from "./engine.mjs";
 
 let firingTheBall = {
@@ -8,6 +9,8 @@ let firingTheBall = {
     Shoot: () => {shoot()}
 };
 
+
+// Create UI elements
 let inputs = document.createElement("div");
 inputs.id = "inputs";
 inputs.style.position = "absolute";
@@ -28,13 +31,27 @@ power.value = 1;
 addLabel("power", "Power:", inputs);
 inputs.appendChild(power);
 
+
 let shootB = document.createElement("button");
 shootB.id = "shootB";
 shootB.innerHTML = "Shoot";
 shootB.onclick = shoot;
 inputs.appendChild(shootB);
 
+let isMusicPlaying = false; // Flag to track playback
+
+document.body.addEventListener('click', (event) => {
+  console.log("Clicked at X:", event.clientX, "Y:", event.clientY);
+
+  if (!isMusicPlaying) { // Only play if not already playing
+    playMusic('./music/song.mp3');
+    isMusicPlaying = true; // Set flag to true after starting playback
+  }
+});
+
 function shoot() {
+    playRandomSoundEffect();
+
     // Is STATIC
     if(ballBody.type == CANNON.Body.STATIC) {
         ballBody.type = CANNON.Body.DYNAMIC;
@@ -54,10 +71,10 @@ power.addEventListener("input", () => {
 })
 
 function addLabel(id, text, where) {
-    let label = document.createElement("label");
-    label.for = id;
-    label.innerHTML = text;
-    where.appendChild(label);
+  let label = document.createElement("label");
+  label.for = id;
+  label.innerHTML = text;
+  where.appendChild(label);
 }
 
-export {firingTheBall};
+export { firingTheBall };
