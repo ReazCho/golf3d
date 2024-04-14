@@ -37,7 +37,7 @@ function createBall(x, y, z) {
     
     // It is golf. The ball must be white
     const ballMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff });
-    ballMesh = new THREE.Mesh(ballGeometry, ballMaterial);
+    ballMesh = new THREE.Mesh(ballGeometry, materials.GolfBall);
 
     window.ballMesh = ballMesh;
     window.ballBody = ballBody;
@@ -88,7 +88,8 @@ function initGame() {
     const ambientLight = new THREE.AmbientLight(skybox_texture, 0.5);
     engine.scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffdd66, 0.5);
+    //directional light is white to not tint the phong material too much
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
     directionalLight.position.set(10, 20, 10);
     directionalLight.lookAt(0, 0, 0);
     engine.scene.add(directionalLight);
