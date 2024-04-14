@@ -5,25 +5,24 @@ let engine = {
     // Start engine
     init: initEngine,
     // Game update function
-    update: () => {console.log("No update function is set in game engine."); engine.isCustomUpdate = false},
+    update: () => { console.log("No update function is set in game engine."); engine.isCustomUpdate = false },
     isCustomUpdate: true,
     // Game 2d draw function (draws on 2d canvas)
     draw2d: default_draw,
-    draw3d: default_draw3d,
     // Events
-    onkeyup: keyCode => {console.log("Default keyup. keycode:", keyCode)},
-    onkeydown: keyCode => {console.log("Default keydown. keycode:", keyCode)},
-    oninit: () => {console.log("Default oninit.")},
-    onmouseup: () => {console.log("Mouseup: ", engine.mouseX, engine.mouseY)},
-    onmousedown: () => {console.log("Mousedown: ", engine.mouseX, engine.mouseY)},
-    onmousemove: () => {},
+    onkeyup: keyCode => { console.log("Default keyup. keycode:", keyCode) },
+    onkeydown: keyCode => { console.log("Default keydown. keycode:", keyCode) },
+    oninit: () => { console.log("Default oninit.") },
+    onmouseup: () => { console.log("Mouseup: ", engine.mouseX, engine.mouseY) },
+    onmousedown: () => { console.log("Mousedown: ", engine.mouseX, engine.mouseY) },
+    onmousemove: () => { },
     // context2d objects
     context2d: null,
     canvas2d: null,
-    updateTime : 10,
-    mouseX : 0,
-    mouseY : 0,
-    isKeyPressed : new Array(256).fill(0),
+    updateTime: 10,
+    mouseX: 0,
+    mouseY: 0,
+    isKeyPressed: new Array(256).fill(0),
     endlessCanvas: false,
     // Three js objects
     scene: null,
@@ -64,7 +63,6 @@ function init2dCanvas() {
     // canvasElement.style.pointerEvents = "none"; // Disable pointer events to allow interaction with underlying canvas
 
     engine.canvas2d = canvasElement;
-
     if (engine.endlessCanvas) {
         engine.canvas2d.width = window.innerWidth;
         engine.canvas2d.height = window.innerHeight;
@@ -86,7 +84,7 @@ function init2dCanvas() {
 }
 
 function initThreeJS() {
-    if(!engine.canvas2d) throw "2d canvas should be initialized first";
+    if (!engine.canvas2d) throw "2d canvas should be initialized first";
 
     engine.scene = new THREE.Scene();
     engine.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -107,11 +105,11 @@ function initEvents() {
         window.addEventListener("touchstart", function (e) {
             // Update global mouseX, mouseY variables
             updateMousePositionTouchEvent(e);
-                engine.onmousedown();
+            engine.onmousedown();
         });
         window.addEventListener("touchend", function (e) {
             updateMousePositionTouchEvent(e);
-                engine.onmouseup();
+            engine.onmouseup();
         });
         window.addEventListener("touchmove", function (e) {
             updateMousePositionTouchEvent(e);
@@ -122,9 +120,9 @@ function initEvents() {
     window.addEventListener("mousemove", updateMousePosition);
 
     // Call mousemove, mouseup, mousedown function from game.js if they exist
-    window.addEventListener("mousemove", () => {engine.onmousemove()});
-    window.addEventListener("mouseup", () => {engine.onmouseup()});
-    window.addEventListener("mousedown", () => {engine.onmousedown()});
+    window.addEventListener("mousemove", () => { engine.onmousemove() });
+    window.addEventListener("mouseup", () => { engine.onmouseup() });
+    window.addEventListener("mousedown", () => { engine.onmousedown() });
 
     // Update global isKeyPressed array
     window.addEventListener("keydown", function (e) {
@@ -138,12 +136,11 @@ function initEvents() {
 }
 // Redraw will be executed many times
 function redraw() {
-    engine.cannonjs_world.step(1/20);
+    engine.cannonjs_world.step(1 / 20);
     engine.context2d.save();
 
     // Call draw function from game.js
     engine.draw2d();
-    engine.draw3d();
 
     engine.renderer.render(engine.scene, engine.camera);
     engine.context2d.restore();
@@ -159,18 +156,15 @@ function default_draw() {
 
     engine.context2d.fillText("No 2d draw function set. (calling default engine.draw2d function).", 40, 40);
 
-    if(!engine.isCustomUpdate) {
+    if (!engine.isCustomUpdate) {
         engine.isCustomUpdate = true;
         engine.context2d.fillText("No update function set. (calling default engine.update function).", 40, 80);
     }
 }
 
-function default_draw3d() {
-
-}
-
 // Init game engine
 function initEngine() {
+    
     init2dCanvas();
 
     // Attach basic mouse and keyboard events
@@ -186,8 +180,8 @@ function initEngine() {
     // Start draw loop
     redraw();
     // Start update loop
-    setInterval(() => {engine.update()}, engine.updateTime);
+    setInterval(() => { engine.update() }, engine.updateTime);
 }
 
 
-export {engine};
+export { engine };

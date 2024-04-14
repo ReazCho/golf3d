@@ -1,14 +1,24 @@
-import { engine} from "./engine.mjs";
+import { engine } from "./engine.mjs";
 import { game } from "./game.mjs"
-import { initGlobalImages } from "./asset_loader.mjs";
-import { loadLiminalTextureLib } from "./BuildingBlocks/Visuals.mjs";
+import { initGlobalImages } from "./asset_loading/asset_loader2d.mjs";
+import { loadLiminalTextureLib } from "./asset_loading/assets_3d.mjs";
+import { initSounds } from "./asset_loading/asset_loader_sounds.mjs";
     
 document.body.onload = () => {
-    console.log("ASDFG: Front end scripts starting.");
+    console.log("Front end scripts starting.");
+
+    // Init sound for game
+    initSounds();
+
+    // 2d canvas image loading (from code.zip)
     initGlobalImages();
-    //load the images via the new workflow that has new customisation
+
+    // 3d assets loading (materials)
     loadLiminalTextureLib();
-    //initGLobalSounds();
+    
+    // initGLobalSounds();
+
     engine.init();
+
     game.init();
 };

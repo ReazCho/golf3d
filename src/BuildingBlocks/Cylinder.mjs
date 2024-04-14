@@ -1,7 +1,7 @@
 import * as THREE from "three.js";
 import * as CANNON from "cannon-es";
 import { engine } from "../engine.mjs";
-import { materials } from "./Visuals.mjs";
+import { materials } from "../asset_loading/assets_3d.mjs";
 
 class Cylinder {
     constructor(x, y, z, radius, length) {
