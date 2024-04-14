@@ -120,8 +120,8 @@ function initEvents() {
     window.addEventListener("mousemove", updateMousePosition);
 
     // Call mousemove, mouseup, mousedown function from game.js if they exist
-    window.addEventListener("mousemove", () => { engine.onmousemove() });
-    window.addEventListener("mouseup", () => { engine.onmouseup() });
+    window.addEventListener("mousemove", (e) => { engine.onmousemove(e) });
+    window.addEventListener("mouseup", (e) => { engine.onmouseup(e) });
     window.addEventListener("mousedown", () => { engine.onmousedown() });
 
     // Update global isKeyPressed array
@@ -136,7 +136,9 @@ function initEvents() {
 }
 // Redraw will be executed many times
 function redraw() {
-    engine.cannonjs_world.step(1 / 20);
+    if(gameStarted){
+        engine.cannonjs_world.step(1 / 20);
+    }
     engine.context2d.save();
 
     // Call draw function from game.js
