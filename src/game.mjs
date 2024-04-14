@@ -12,6 +12,7 @@ import { firingTheBall } from "./firingTheBall.mjs";
 import { initSoundEvents } from "./Sounds.mjs";
 import { createPineTree } from "./BuildingBlock_no_collision/pine.mjs";
 import { createBall, ballMesh, ballBody } from "./ball.mjs";
+import { createNewEmitter, updateEmitters } from "./BuildingBlocks/Particle.mjs";
 
 const orbitControls = true;
 
@@ -77,7 +78,7 @@ function initGame() {
     initSoundEvents();
 
     // Create ball and attach to window
-    createBall(11, 30, 0);
+    createBall(5, 30, 0);
 
     // Init slider and buttons for firing the ball
     firingTheBall.initUI();
@@ -100,6 +101,8 @@ function initGame() {
     // IMPORTANT!
     initLevel();
 
+    //DEBUG spawn test emitter
+
     let lastDX, lastDY, lastDZ;
 
     // Set custom update function
@@ -108,19 +111,23 @@ function initGame() {
         time++;
         controls.update();
 
+        //update all particle systems
+        updateEmitters()
+
         // Update ball mesh position
         ballMesh.position.copy(ballBody.position);
 
         // TODO: Playing sounds on ball bounce
-        // let bounceGranica = 2;
-        // if(Math.abs(lastDX - ballBody.velocity.x) > bounceGranica || 
-        // Math.abs(lastDY - ballBody.velocity.y) > bounceGranica ||
-        // Math.abs(lastDZ - ballBody.velocity.z) > bounceGranica) {
-        //     console.log("TUP");
-        // }
-        // lastDX = ballBody.velocity.x;
-        // lastDY = ballBody.velocity.y;
-        // lastDZ = ballBody.velocity.z;
+        let bounceGranica = 2;
+        if(Math.abs(lastDX - ballBody.velocity.x) > bounceGranica || 
+        Math.abs(lastDY - ballBody.velocity.y) > bounceGranica ||
+        Math.abs(lastDZ - ballBody.velocity.z) > bounceGranica) {
+            console.log("TUP");
+            createNewEmitter(ballBody.position.x, ballBody.position.y, ballBody.position.z, "burst", {particle_cnt: 50, particle_lifetime: {min:0.2, max:0.5}, power: 0.05, fired: false})
+        }
+        lastDX = ballBody.velocity.x;
+        lastDY = ballBody.velocity.y;
+        lastDZ = ballBody.velocity.z;
 
 
         // Makes the ball static when it isn't moving
