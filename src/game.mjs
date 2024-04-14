@@ -14,7 +14,7 @@ import { createPineTree } from "./BuildingBlock_no_collision/pine.mjs";
 import { createBall, ballMesh, ballBody } from "./ball.mjs";
 import { Menu } from "./menu.mjs";
 import { areColliding } from "./utils.mjs";
-
+import { createSnowman } from "./BuildingBlock_no_collision/snowman.mjs";
 const orbitControls = true;
 
 let oldBallPosision = { x: 0, y: 0, z: 0 };
