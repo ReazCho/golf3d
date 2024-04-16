@@ -18,7 +18,7 @@ import { areColliding } from "./utils.mjs";
 
 const orbitControls = true;
 
-let oldBallPosition = { x: 0, y: 0, z: 0 };
+let oldBallPosision = { x: 0, y: 0, z: 0 };
 
 function createGround() {
     // Create ground plane
@@ -72,24 +72,10 @@ function initLevel() {
     new Cylinder(25, 0, 2, 5, 5);
     createPineTree(engine.scene, 25, 5, 2);
 
-    // Adding ball direction arrows
-    let colors = [0xffd000, 0xff9900,0xff0000];
-    for(let i = 0; i < 3; i++) {
-        const ballDirectionGeometry = new THREE.ConeGeometry( .5, 5, 5 );
-        const ballDirectionMaterial = new THREE.MeshPhongMaterial({ color: colors[i], flatShading: true });
-        ballDirectionMesh.push(new THREE.Mesh(ballDirectionGeometry, ballDirectionMaterial));
-
-        ballDirectionMesh[i].position.set(5, 30 + 4*i, 0)
-    
-        engine.scene.add(ballDirectionMesh[i]);
-    }
 }
-
 let time = 0, obx = 0, oby = 0, obz = 0;
 let controls = null;
 window.gameStarted = false;
-let ballDirectionMesh = [];
-
 function initGame() {
     initSoundEvents();
 
@@ -170,7 +156,7 @@ function initGame() {
 
             if (error < 1) {
                 ballBody.type = CANNON.Body.STATIC;
-                oldBallPosition = { x: 0, y: 0, z: 0 };
+                oldBallPosision = { x: 0, y: 0, z: 0 };
             }
 
             obx = Math.abs(ballMesh.position.x);
@@ -180,29 +166,6 @@ function initGame() {
 
         // Gets the angle between the camera and the ball so you can shoot at the direction you are looking
         firingTheBall.direction = Math.atan2(ballMesh.position.z - engine.camera.position.z, ballMesh.position.x - engine.camera.position.x);
-
-        // Moving the ball direction arrows to the right place
-        for(let i = 0; i < 3; i++) {
-            if(ballDirectionMesh[i] !== undefined) {
-                // Calculates the needed arrows
-                if(i <= Math.floor(Math.abs((firingTheBall.power+20)/100)*2)) {
-                    ballDirectionMesh[i].visible = true;
-
-                    ballDirectionMesh[i].position.set(
-                        ballMesh.position.x + Math.cos(firingTheBall.direction) * 3.5 * (i + 1),
-                        ballMesh.position.y,
-                        ballMesh.position.z + Math.sin(firingTheBall.direction) * 3.5 * (i + 1)
-                    );
-                    
-                    ballDirectionMesh[i].rotation.x = 1.57079633;
-                    ballDirectionMesh[i].rotation.y = 0;
-                    ballDirectionMesh[i].rotation.z = firingTheBall.direction - 1.57079633;
-
-                } else {
-                    ballDirectionMesh[i].visible = false;
-                }
-            }
-        }
     });
 
     
