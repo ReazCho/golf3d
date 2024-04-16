@@ -1,7 +1,8 @@
 import { engine } from "./engine.mjs";
-import * as THREE from "three.js";
+import * as THREE from "three";
 import * as CANNON from "cannon-es";
 import OrbitControls_ from 'three-orbit-controls';
+import { OrbitControls } from "three/examples/jsm/Addons.js";
 import { Ramp } from "./BuildingBlocks/Ramp.mjs";
 import { BuildingBlock } from "./BuildingBlocks/BuildingBlock.mjs";
 import { MovingPlatform } from "./BuildingBlocks/MovingPlatform.mjs";
@@ -15,6 +16,7 @@ import { createBall, ballMesh, ballBody } from "./ball.mjs";
 import { createNewEmitter, updateEmitters } from "./BuildingBlocks/Particle.mjs";
 import { Menu } from "./menu.mjs";
 import { areColliding } from "./utils.mjs";
+import { createHillsBufferGeometry } from "./Terrain/Hills.mjs";
 
 const orbitControls = true;
 
@@ -82,12 +84,13 @@ function initGame() {
     // Create ball and attach to window
     createBall(5, 30, 0);
 
+    createHillsBufferGeometry(20, 20, 20, 10);
     // Init slider and buttons for firing the ball
     firingTheBall.initUI();
 
     // Init orbit controls
     if (orbitControls) {
-        const OrbitControls = new OrbitControls_(THREE);
+        // const OrbitControls = new OrbitControls_(THREE);
         controls = new OrbitControls(engine.camera, engine.canvas2d);
         controls.target = ballMesh.position;
     }

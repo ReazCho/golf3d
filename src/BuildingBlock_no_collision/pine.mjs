@@ -1,4 +1,4 @@
-import THREE from "three.js";
+import * as THREE from "three";
 import { engine } from "../engine.mjs";
 import { materials } from "../asset_loading/assets_3d.mjs";
 
