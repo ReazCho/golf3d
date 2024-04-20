@@ -1,5 +1,5 @@
 import { engine } from "./engine.mjs";
-import * as THREE from "three";
+import * as THREE from "three.js";
 import * as CANNON from "cannon-es";
 import OrbitControls_ from 'three-orbit-controls';
 import { Ramp } from "./BuildingBlocks/Ramp.mjs";
@@ -9,14 +9,10 @@ import { Cylinder } from "./BuildingBlocks/Cylinder.mjs";
 //Visuals for the game
 import { Skybox, skybox_texture } from "./asset_loading/assets_3d.mjs";
 import { firingTheBall } from "./firingTheBall.mjs";
-import { initSoundEvents } from "./Sounds.mjs";
+import { initSoundEvents, playRandomSoundEffectFall } from "./Sounds.mjs";
 import { createPineTree } from "./BuildingBlock_no_collision/pine.mjs";
 import { createBall, ballMesh, ballBody } from "./ball.mjs";
-import { createNewEmitter, updateEmitters } from "./BuildingBlocks/Particle.mjs";
-import { Menu } from "./menu.mjs";
-import { areColliding } from "./utils.mjs";
-import { createHillsBufferGeometry } from "./Terrain/Hills.mjs";
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
 const orbitControls = true;
 
 let oldBallPosision = { x: 0, y: 0, z: 0 };
@@ -52,7 +48,7 @@ function initLights() {
     engine.scene.add(ambientLight);
 
     //directional light is white to not tint the phong material too much
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
     directionalLight.position.set(10, 20, 10);
     directionalLight.lookAt(0, 0, 0);
     engine.scene.add(directionalLight);
@@ -76,19 +72,19 @@ function initLevel() {
 }
 let time = 0, obx = 0, oby = 0, obz = 0;
 let controls = null;
-window.gameStarted = false;
+
 function initGame() {
     initSoundEvents();
 
     // Create ball and attach to window
-    createBall(5, 30, 0);
+    createBall(11, 30, 0);
 
-    createHillsBufferGeometry(10, 10, 100, 5, 20);
     // Init slider and buttons for firing the ball
     firingTheBall.initUI();
 
     // Init orbit controls
     if (orbitControls) {
+        const OrbitControls = new OrbitControls_(THREE);
         controls = new OrbitControls(engine.camera, engine.canvas2d);
         controls.target = ballMesh.position;
     }
@@ -101,10 +97,8 @@ function initGame() {
     // Init skybox
     const skybox = new Skybox();
 
-    // IMPORTANT! - called when the play button is clicked
-    //initLevel();
-
-    //DEBUG spawn test emitter
+    // IMPORTANT!
+    initLevel();
 
     let lastDX, lastDY, lastDZ;
 
@@ -114,30 +108,34 @@ function initGame() {
         time++;
         controls.update();
 
-        //update all particle systems
-        updateEmitters()
-
         // Update ball mesh position
         ballMesh.position.copy(ballBody.position);
 
-        // TODO: Playing sounds on ball bounce
-        let bounceGranica = 2;
-        if(Math.abs(lastDX - ballBody.velocity.x) > bounceGranica || 
-        Math.abs(lastDY - ballBody.velocity.y) > bounceGranica ||
-        Math.abs(lastDZ - ballBody.velocity.z) > bounceGranica) {
-            console.log("TUP");
-            createNewEmitter(ballBody.position.x, ballBody.position.y, ballBody.position.z, "burst", {particle_cnt: 50, particle_lifetime: {min:0.2, max:0.5}, power: 0.05, fired: false})
+        const bounceThreshold = 3;
+
+        function checkBounce(lastVelocities, currentVelocities) {
+            return Object.keys(currentVelocities).some(axis => 
+                Math.abs(lastVelocities[axis] - currentVelocities[axis]) > bounceThreshold
+            );
         }
-        lastDX = ballBody.velocity.x;
-        lastDY = ballBody.velocity.y;
-        lastDZ = ballBody.velocity.z;
+        
+        const currentVelocities = { x: ballBody.velocity.x, y: ballBody.velocity.y, z: ballBody.velocity.z };
+        
+        if (checkBounce({ x: lastDX, y: lastDY, z: lastDZ }, currentVelocities)) {
+            console.log("TUP");
+            playRandomSoundEffectFall();
+        }
+        
+        lastDX = currentVelocities.x;
+        lastDY = currentVelocities.y;
+        lastDZ = currentVelocities.z;
 
 
         // Makes the ball static when it isn't moving
         if (time % 100 == 0) {
             let error = 0, bx = Math.abs(ballMesh.position.x), by = Math.abs(ballMesh.position.y), bz = Math.abs(ballMesh.position.z);
 
-            if (bx - obx >= 0) {
+                if (bx - obx >= 0) {
                 error = bx - obx;
             } else {
                 error = bx + obx;
@@ -169,34 +167,12 @@ function initGame() {
         firingTheBall.direction = Math.atan2(ballMesh.position.z - engine.camera.position.z, ballMesh.position.x - engine.camera.position.x);
     });
 
-    
-    let menu = new Menu();
     // Set custom draw function
-    window.music = true;
-    window.sfx = true;
     engine.draw2d = (() => {
         engine.context2d.clearRect(0, 0, engine.canvas2d.width, engine.canvas2d.height);
+
         engine.context2d.strokeRect(0, 0, canvas2d.width, canvas2d.height);
-        menu.draw()
     });
-    engine.onmouseup = ((e) => {
-        let mouseX = e.clientX;
-        let mouseY = e.clientY;
-        console.log(e,mouseX,mouseY)
-        //play button
-        if(areColliding(mouseX,mouseY,1,1,275,200,250,100)){ //Play
-            //initGame();
-            gameStarted = true;
-            initLevel();
-            menu.startSimulation();
-        }
-        if(areColliding(mouseX,mouseY,1,1,275,200,250,100)){ //Music
-            menu.toggleMusic()
-        }
-        if(areColliding(mouseX,mouseY,1,1,275,200,250,100)){ //Sfx
-            menu.toggleSfx()
-        }
-    })
 }
 
 let game = {
