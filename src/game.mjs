@@ -103,7 +103,6 @@ function initGame() {
     // Init skybox
     const skybox = new Skybox();
 
-    // IMPORTANT! - called when the play button is clicked
     //initLevel();
 
     //DEBUG spawn test emitter
@@ -171,11 +170,10 @@ function initGame() {
         firingTheBall.direction = Math.atan2(ballMesh.position.z - engine.camera.position.z, ballMesh.position.x - engine.camera.position.x);
     });
 
-    
     let menu = new Menu();
     // Set custom draw function
-    window.music = true;
-    window.sfx = true;
+    window.musicEnabled = true;
+    window.sfxEnabled = true;
     engine.draw2d = (() => {
         engine.context2d.clearRect(0, 0, engine.canvas2d.width, engine.canvas2d.height);
         engine.context2d.strokeRect(0, 0, canvas2d.width, canvas2d.height);
@@ -188,14 +186,13 @@ function initGame() {
         //play button
         if(areColliding(mouseX,mouseY,1,1,275,200,250,100)){ //Play
             //initGame();
-            gameStarted = true;
             initLevel();
             menu.startSimulation();
         }
-        if(areColliding(mouseX,mouseY,1,1,275,200,250,100)){ //Music
+        if(areColliding(mouseX,mouseY,1,1,175,475,200,75)){ //Music
             menu.toggleMusic()
         }
-        if(areColliding(mouseX,mouseY,1,1,275,200,250,100)){ //Sfx
+        if(areColliding(mouseX,mouseY,1,1,425,475,200,75)){ //Sfx
             menu.toggleSfx()
         }
     })
