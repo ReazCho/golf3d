@@ -5,6 +5,8 @@ import { materials } from "../asset_loading/assets_3d.mjs";
 import * as perlin from 'perlin.js';
 
 function createHillsBufferGeometry(sizeX, sizeY, N, noiseScale, scaleZ) {
+
+    // TODO: refactor and make readable
     const uvTex = new THREE.TextureLoader().load("./images/LiminalTextureLib/Grass2.jpg");
     console.log(uvTex)
     const material01 = new THREE.MeshPhongMaterial({ map: uvTex, side: THREE.DoubleSide, });	//   uv grid
