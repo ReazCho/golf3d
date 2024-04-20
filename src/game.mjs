@@ -10,7 +10,7 @@ import { Cylinder } from "./BuildingBlocks/Cylinder.mjs";
 //Visuals for the game
 import { Skybox, skybox_texture } from "./asset_loading/assets_3d.mjs";
 import { firingTheBall } from "./firingTheBall.mjs";
-import { initSoundEvents } from "./Sounds.mjs";
+import { initSoundEvents } from "./Sounds.mjs" 
 import { createPineTree } from "./BuildingBlock_no_collision/pine.mjs";
 import { createBall, ballMesh, ballBody } from "./ball.mjs";
 import { createNewEmitter, updateEmitters } from "./BuildingBlocks/Particle.mjs";
@@ -79,7 +79,7 @@ let time = 0, obx = 0, oby = 0, obz = 0;
 let controls = null;
 window.gameStarted = false;
 function initGame() {
-    initSoundEvents();
+    //initSoundEvents();
 
     // Create ball and attach to window
     createBall(5, 30, 0);
@@ -183,17 +183,18 @@ function initGame() {
         let mouseX = e.clientX;
         let mouseY = e.clientY;
         console.log(e,mouseX,mouseY)
-        //play button
-        if(areColliding(mouseX,mouseY,1,1,275,200,250,100)){ //Play
-            //initGame();
-            initLevel();
-            menu.startSimulation();
-        }
-        if(areColliding(mouseX,mouseY,1,1,175,475,200,75)){ //Music
-            menu.toggleMusic()
-        }
-        if(areColliding(mouseX,mouseY,1,1,425,475,200,75)){ //Sfx
-            menu.toggleSfx()
+        if(!gameStarted){
+            if(areColliding(mouseX,mouseY,1,1,275,200,250,100)){ //Play
+                //initGame();
+                initLevel();
+                menu.startSimulation();
+            }
+            if(areColliding(mouseX,mouseY,1,1,175,475,200,75)){ //Music
+                menu.toggleMusic()
+            }
+            if(areColliding(mouseX,mouseY,1,1,425,475,200,75)){ //Sfx
+                menu.toggleSfx()
+            }
         }
     })
 }

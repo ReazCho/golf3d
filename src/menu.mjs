@@ -1,5 +1,6 @@
 import { engine } from "./engine.mjs";
 import { createButton } from "./utils.mjs";
+import { playMusic } from "./Sounds.mjs";
 //gnusni hardcodnati chisla
 
 class Menu {
@@ -26,6 +27,9 @@ class Menu {
     startSimulation(){
         engine.context2d.globalAlpha = 0;
         gameStarted = true;
+        if(musicEnabled){ //there is no pause menu so this should work for now
+            playMusic();
+        }
     }
     toggleMusic(){
         musicEnabled = !musicEnabled

@@ -53,8 +53,9 @@ function initShootingUI() {
 
 
 function shoot() {
-  playRandomSoundEffect();
-
+  if(sfxEnabled){ //there is no pause menu so this should work for now
+    playRandomSoundEffect();
+  }
   // Is STATIC
   if (ballBody.type == CANNON.Body.STATIC) {
     ballBody.type = CANNON.Body.DYNAMIC;
