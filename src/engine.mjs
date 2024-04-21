@@ -156,7 +156,7 @@ function default_draw() {
     engine.context2d.fillStyle = "#FF0000";
     engine.context2d.font = "20px Arial";
 
-    engine.context2d.fillText("No 2d draw function set. (calling default engine.draw2d function).", 40, 40);
+    //engine.context2d.fillText("No 2d draw function set. (calling default engine.draw2d function).", 40, 40);
 
     if (!engine.isCustomUpdate) {
         engine.isCustomUpdate = true;

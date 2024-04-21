@@ -80,6 +80,14 @@ let controls = null;
 window.gameStarted = false;
 function initGame() {
     //initSoundEvents();
+    const shouldMenuBeMade = false; //debug only
+    if(shouldMenuBeMade){
+        initMenu();
+    }else{
+        gameStarted = true;
+        initSoundEvents();
+        initLevel();
+    }
 
     // Create ball and attach to window
     createBall(5, 30, 0);
@@ -169,34 +177,35 @@ function initGame() {
         // Gets the angle between the camera and the ball so you can shoot at the direction you are looking
         firingTheBall.direction = Math.atan2(ballMesh.position.z - engine.camera.position.z, ballMesh.position.x - engine.camera.position.x);
     });
-
-    let menu = new Menu();
-    // Set custom draw function
-    window.musicEnabled = true;
-    window.sfxEnabled = true;
-    engine.draw2d = (() => {
-        engine.context2d.clearRect(0, 0, engine.canvas2d.width, engine.canvas2d.height);
-        engine.context2d.strokeRect(0, 0, canvas2d.width, canvas2d.height);
-        menu.draw()
-    });
-    engine.onmouseup = ((e) => {
-        let mouseX = e.clientX;
-        let mouseY = e.clientY;
-        console.log(e,mouseX,mouseY)
-        if(!gameStarted){
-            if(areColliding(mouseX,mouseY,1,1,275,200,250,100)){ //Play
-                //initGame();
-                initLevel();
-                menu.startSimulation();
+    function initMenu(){
+        let menu = new Menu();
+        // Set custom draw function
+        window.musicEnabled = true;
+        window.sfxEnabled = true;
+        engine.draw2d = (() => {
+            engine.context2d.clearRect(0, 0, engine.canvas2d.width, engine.canvas2d.height);
+            engine.context2d.strokeRect(0, 0, canvas2d.width, canvas2d.height);
+            menu.draw()
+        });
+        engine.onmouseup = ((e) => {
+            let mouseX = e.clientX;
+            let mouseY = e.clientY;
+            console.log(e,mouseX,mouseY)
+            if(!gameStarted){
+                if(areColliding(mouseX,mouseY,1,1,275,200,250,100)){ //Play
+                    //initGame();
+                    initLevel();
+                    menu.startSimulation();
+                }
+                if(areColliding(mouseX,mouseY,1,1,175,475,200,75)){ //Music
+                    menu.toggleMusic()
+                }
+                if(areColliding(mouseX,mouseY,1,1,425,475,200,75)){ //Sfx
+                    menu.toggleSfx()
+                }
             }
-            if(areColliding(mouseX,mouseY,1,1,175,475,200,75)){ //Music
-                menu.toggleMusic()
-            }
-            if(areColliding(mouseX,mouseY,1,1,425,475,200,75)){ //Sfx
-                menu.toggleSfx()
-            }
-        }
-    })
+        })
+    }
 }
 
 let game = {
