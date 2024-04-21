@@ -78,6 +78,8 @@ function initLevel() {
 let time = 0, obx = 0, oby = 0, obz = 0;
 let controls = null;
 window.gameStarted = false;
+window.musicEnabled = true;
+window.sfxEnabled = true;
 function initGame() {
     //initSoundEvents();
     const shouldMenuBeMade = false; //debug only
@@ -87,6 +89,10 @@ function initGame() {
         gameStarted = true;
         initSoundEvents();
         initLevel();
+        engine.draw2d = (() => {
+            engine.context2d.clearRect(0, 0, engine.canvas2d.width, engine.canvas2d.height);
+            engine.context2d.strokeRect(0, 0, canvas2d.width, canvas2d.height);
+        });
     }
 
     // Create ball and attach to window
@@ -180,8 +186,6 @@ function initGame() {
     function initMenu(){
         let menu = new Menu();
         // Set custom draw function
-        window.musicEnabled = true;
-        window.sfxEnabled = true;
         engine.draw2d = (() => {
             engine.context2d.clearRect(0, 0, engine.canvas2d.width, engine.canvas2d.height);
             engine.context2d.strokeRect(0, 0, canvas2d.width, canvas2d.height);
