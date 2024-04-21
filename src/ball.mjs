@@ -8,27 +8,26 @@ function createBall(x, y, z) {
     // Ball (Physics)
     const ballMaterialPhysics = new CANNON.Material(); // Create a new material
     ballMaterialPhysics.friction = 1;
-    ballMaterialPhysics.restitution = 5; // Set the restitution coefficient (adjust as needed)
-    ballMaterialPhysics.friction = 0.2;
-    const ballShape = new CANNON.Sphere(1); // Radius 1
+    ballMaterialPhysics.restitution = 5; 
+    const ballShape = new CANNON.Sphere(1); 
     ballBody = new CANNON.Body({
-      mass: 5,
+      mass: 10,
       position: new CANNON.Vec3(x, y, z),
       shape: ballShape,
       material: ballMaterialPhysics,
     });
     
-    ballBody.linearDamping = 0.4;
+    ballBody.linearDamping = 0.5;
+    
     engine.cannonjs_world.addBody(ballBody);
-  
     const ballGeometry = new THREE.SphereGeometry(1, 32, 32);
-    ballMesh = new THREE.Mesh(ballGeometry, materials.GolfBall);
-  
+    ballMesh = new THREE.Mesh(ballGeometry, materials.GolfBall);  
+    
     window.ballMesh = ballMesh; 
     window.ballBody = ballBody; 
   
     ballMesh.position.set(x, y, z);
     engine.scene.add(ballMesh);
   }
-
+  
 export {ballMesh, ballBody, createBall};
