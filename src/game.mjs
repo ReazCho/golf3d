@@ -39,7 +39,7 @@ function initCamera() {
     engine.camera.lookAt(0, 10, 0);
 
     //change far frustum plane to account for skybox
-    engine.camera.far = 10000;
+    engine.camera.far = 10000; 
 }
 
 function initLights() {
@@ -165,6 +165,11 @@ function initGame() {
 
         // Gets the angle between the camera and the ball so you can shoot at the direction you are looking
         firingTheBall.direction = Math.atan2(ballMesh.position.z - engine.camera.position.z, ballMesh.position.x - engine.camera.position.x);
+        if (engine.camera.position.y >= 460 || engine.camera.position.y <= -460 || engine.camera.position.z >= 460 || engine.camera.position.z <= -460 || engine.camera.position.x >= 460 || engine.camera.position.x <= -460 ){
+            engine.camera.position.set(0, 20, 80);
+            engine.camera.lookAt(0, 10, 0);
+            engine.camera.far = 10000;
+        }
     });
 
     // Set custom draw function
