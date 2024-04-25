@@ -39,7 +39,7 @@ function initCamera() {
     engine.camera.lookAt(0, 10, 0);
 
     //change far frustum plane to account for skybox
-    engine.camera.far = 10000; 
+    engine.camera.far = 10000;
 }
 
 function initLights() {
@@ -69,13 +69,18 @@ function initLevel() {
     new Cylinder(25, 0, 2, 5, 5);
     createPineTree(engine.scene, 25, 5, 2);
 
-    const holeGeometry  = new THREE.CylinderGeometry(1.8, 1, 2.1, 64, 12, );// Making the hole deeper
-    const holeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000}); // Set opacity for transparency
-const hole = new THREE.Mesh(holeGeometry, holeMaterial);
-hole.position.set(41.272525623298705, -3.2, 0);
-engine.scene.add(hole);
-}
+    const holeGeometry = new THREE.CylinderGeometry(1.8, 1, 2.1, 64, 12);
+    const holeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+    const hole = new THREE.Mesh(holeGeometry, holeMaterial);
+    hole.position.set(51.2, -6, 0);
+    engine.scene.add(hole);
 
+    var geometry = new THREE.CylinderGeometry(1, 2, 2);
+    var material = new THREE.MeshBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0.5 });
+    var ellipse = new THREE.Mesh(geometry, material);
+    ellipse.position.set(51.2, -5.9, 0);
+    engine.scene.add(ellipse);
+}
 let time = 0, obx = 0, oby = 0, obz = 0;
 let controls = null;
 
@@ -120,18 +125,18 @@ function initGame() {
         const bounceThreshold = 3;
 
         function checkBounce(lastVelocities, currentVelocities) {
-            return Object.keys(currentVelocities).some(axis => 
+            return Object.keys(currentVelocities).some(axis =>
                 Math.abs(lastVelocities[axis] - currentVelocities[axis]) > bounceThreshold
             );
         }
-        
+
         const currentVelocities = { x: ballBody.velocity.x, y: ballBody.velocity.y, z: ballBody.velocity.z };
-        
+
         if (checkBounce({ x: lastDX, y: lastDY, z: lastDZ }, currentVelocities)) {
             console.log("TUP");
             playRandomSoundEffectFall();
         }
-        
+
         lastDX = currentVelocities.x;
         lastDY = currentVelocities.y;
         lastDZ = currentVelocities.z;
@@ -171,7 +176,7 @@ function initGame() {
 
         // Gets the angle between the camera and the ball so you can shoot at the direction you are looking
         firingTheBall.direction = Math.atan2(ballMesh.position.z - engine.camera.position.z, ballMesh.position.x - engine.camera.position.x);
-        if (engine.camera.position.y >= 460 || engine.camera.position.y <= -460 || engine.camera.position.z >= 460 || engine.camera.position.z <= -460 || engine.camera.position.x >= 460 || engine.camera.position.x <= -460 ){
+        if (engine.camera.position.y >= 460 || engine.camera.position.y <= -460 || engine.camera.position.z >= 460 || engine.camera.position.z <= -460 || engine.camera.position.x >= 460 || engine.camera.position.x <= -460) {
             engine.camera.position.set(0, 20, 80);
             engine.camera.lookAt(0, 10, 0);
             engine.camera.far = 10000;
