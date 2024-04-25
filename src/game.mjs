@@ -69,7 +69,13 @@ function initLevel() {
     new Cylinder(25, 0, 2, 5, 5);
     createPineTree(engine.scene, 25, 5, 2);
 
+    const holeGeometry  = new THREE.CylinderGeometry(1.8, 1, 2.1, 64, 12, );// Making the hole deeper
+    const holeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000}); // Set opacity for transparency
+const hole = new THREE.Mesh(holeGeometry, holeMaterial);
+hole.position.set(41.272525623298705, -3.2, 0);
+engine.scene.add(hole);
 }
+
 let time = 0, obx = 0, oby = 0, obz = 0;
 let controls = null;
 
