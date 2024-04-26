@@ -6,6 +6,7 @@ import { Ramp } from "./BuildingBlocks/Ramp.mjs";
 import { BuildingBlock } from "./BuildingBlocks/BuildingBlock.mjs";
 import { MovingPlatform } from "./BuildingBlocks/MovingPlatform.mjs";
 import { Cylinder } from "./BuildingBlocks/Cylinder.mjs";
+import { GolfHole } from "./BuildingBlocks/GolfHole.mjs";
 //Visuals for the game
 import { Skybox, skybox_texture } from "./asset_loading/assets_3d.mjs";
 import { firingTheBall } from "./firingTheBall.mjs";
@@ -67,19 +68,10 @@ function initLevel() {
 
     new MovingPlatform(15, 20, 20, 30, 30, 30, 20, 1, 15);
     new Cylinder(25, 0, 2, 5, 5);
+    new GolfHole(51.2, -6, 0, 1.8, 1, 2.1, 64, 12,51.2, -5.9, 0,1, 2, 2)
     createPineTree(engine.scene, 25, 5, 2);
 
-    const holeGeometry = new THREE.CylinderGeometry(1.8, 1, 2.1, 64, 12);
-    const holeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
-    const hole = new THREE.Mesh(holeGeometry, holeMaterial);
-    hole.position.set(51.2, -6, 0);
-    engine.scene.add(hole);
 
-    var geometry = new THREE.CylinderGeometry(1, 2, 2);
-    var material = new THREE.MeshBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0.5 });
-    var ellipse = new THREE.Mesh(geometry, material);
-    ellipse.position.set(51.2, -5.9, 0);
-    engine.scene.add(ellipse);
 }
 let time = 0, obx = 0, oby = 0, obz = 0;
 let controls = null;
