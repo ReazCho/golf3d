@@ -1,4 +1,3 @@
-QQQQQQ
 # Golf 3D
 Това е препис и преподредба на [този документ](https://docs.google.com/document/d/16p9J5z5qNvp8KJ165S-BUk74BaFtBCcgIXOfSPorjF8/edit?usp=sharing), но направено на markdown файл и сложено в репото за удобство (много ме мързи да влизам на сайта)
 ### 1. Настройване

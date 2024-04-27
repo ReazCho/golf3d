@@ -68,7 +68,7 @@ function initLevel() {
 
     new MovingPlatform(15, 20, 20, 30, 30, 30, 20, 1, 15);
     new Cylinder(25, 0, 2, 5, 5);
-    new GolfHole(51.2, -6, 0, 1.8, 1, 2.1, 64, 12,51.2, -5.9, 0,1, 2, 2)
+    new GolfHole(51.2, -6, 0, 1.8, 1, 2.1, 64, 12, 51.2, -5.9, 0, 1, 2, 2)
     createPineTree(engine.scene, 25, 5, 2);
 
 
@@ -174,7 +174,14 @@ function initGame() {
             engine.camera.far = 10000;
         }
     });
-
+    //  engine.onkeydown = function(keyCode) {
+    //   if (engine.isKeyPressed[68]) {
+    //console.log("neo")
+    //ballMesh.position.set(11, 30, 0);
+    //ballBody.x = 11;
+    //ballBody.y = 30;
+    //ballBody.z = 0;
+    //}}
     // Set custom draw function
     engine.draw2d = (() => {
         engine.context2d.clearRect(0, 0, engine.canvas2d.width, engine.canvas2d.height);
