@@ -12,7 +12,7 @@ import { Skybox, skybox_texture } from "./asset_loading/assets_3d.mjs";
 import { firingTheBall } from "./firingTheBall.mjs";
 import { initSoundEvents, playRandomSoundEffectFall } from "./Sounds.mjs";
 import { createPineTree } from "./BuildingBlock_no_collision/pine.mjs";
-import { createBall, ballMesh, ballBody } from "./ball.mjs";
+import { createBall, ballMesh, ballBody,deleteBall } from "./ball.mjs";
 
 const orbitControls = true;
 
@@ -107,7 +107,6 @@ function initGame() {
 
     // Set custom update function
     engine.update = (() => {
-
         time++;
         controls.update();
 
@@ -174,14 +173,20 @@ function initGame() {
             engine.camera.far = 10000;
         }
     });
-    //  engine.onkeydown = function(keyCode) {
-    //   if (engine.isKeyPressed[68]) {
-    //console.log("neo")
-    //ballMesh.position.set(11, 30, 0);
-    //ballBody.x = 11;
-    //ballBody.y = 30;
-    //ballBody.z = 0;
-    //}}
+    engine.onkeydown = function(keyCode) {
+    if (engine.isKeyPressed[68]) {
+        deleteBall();
+        console.log("FDS")
+        //buton D za mahane
+    }
+}
+//engine.onkeydown = function(keyCode) {
+   // if (engine.isKeyPressed[65]) {
+    //    createBall(11, 30, 0);
+     //   console.log("fd")
+     //   //buon A za dobavqne
+   // }
+//}
     // Set custom draw function
     engine.draw2d = (() => {
         engine.context2d.clearRect(0, 0, engine.canvas2d.width, engine.canvas2d.height);
