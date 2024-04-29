@@ -173,20 +173,27 @@ function initGame() {
             engine.camera.far = 10000;
         }
     });
-    engine.onkeydown = function(keyCode) {
-    if (engine.isKeyPressed[68]) {
-        deleteBall();
-        console.log("FDS")
+ //   engine.onkeydown = function(keyCode) {
+  //  if (engine.isKeyPressed[68]) {
+   //     deleteBall();
+    //    console.log("FDS")
         //buton D za mahane
-    }
-}
-//engine.onkeydown = function(keyCode) {
-   // if (engine.isKeyPressed[65]) {
-    //    createBall(11, 30, 0);
-     //   console.log("fd")
-     //   //buon A za dobavqne
-   // }
+  //  }
 //}
+const cooldownDuration = 5000; // 50 secundi
+let lastOperationTime = 0;
+
+engine.onkeydown = function (keyCode) {
+    const currentTime = Date.now();
+
+    if (engine.isKeyPressed[65] && currentTime - lastOperationTime >= cooldownDuration) {
+        createBall(11, 30, 0);     
+
+        lastOperationTime = currentTime;
+    } else if (engine.isKeyPressed[65]) {
+        console.log("Cooldown active.");
+    }
+};
     // Set custom draw function
     engine.draw2d = (() => {
         engine.context2d.clearRect(0, 0, engine.canvas2d.width, engine.canvas2d.height);
