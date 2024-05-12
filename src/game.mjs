@@ -17,6 +17,7 @@ import { Menu, initMenu, menuConfig } from "./menu.mjs";
 import { areColliding } from "./utils.mjs";
 import { createHillsBufferGeometry } from "./Terrain/Hills.mjs";
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import {flag} from "./BuildingBlock_no_collision/flag.mjs"
 const orbitControls = true;
 
 let oldBallPosition = { x: 0, y: 0, z: 0 };
@@ -72,6 +73,7 @@ function initLevel() {
     new MovingPlatform(15, 20, 20, 30, 30, 30, 20, 1, 15);
     new Cylinder(25, 0, 2, 5, 5);
     createPineTree(0, 20, 0);
+    flag(0,2,2);
 }
 
 let ballDirectionMesh = [];
