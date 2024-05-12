@@ -9,9 +9,9 @@ function playRandomSoundEffect(volume = 0.7) {
 }
 
 function playRandomSoundEffectFall(volume = 0.7) {
-    let soundFile = preloadedSounds.bounceAudio;
-    soundFile.volume = volume;
-    soundFile.play();
+  let soundFile = preloadedSounds.bounceAudio;
+  soundFile.volume = volume;
+  soundFile.play();
 }
 function playBackgroundMusic(volume = 0.4) {
   let isMusicPlaying = false;

@@ -28,9 +28,11 @@ const randomSounds = [
     "./music/golf ball hit 3.wav",
     "./music/golf ball hit 4.wav",
 ];
+
 const SoundsFalling = [
     "./music/golf ball fall.mp3",
 ];
+
 const bgMusicFileName = './music/song.mp3';
 
-export { default2dImages as images, materials_data, randomSounds, SoundsFalling, bgMusicFileName };
+export { default2dImages as images, materials_data, randomSounds, bgMusicFileName,SoundsFalling };

@@ -1,4 +1,4 @@
-import * as THREE from "three.js";
+import * as THREE from "three";
 import { engine } from "../engine.mjs";
 import { materials_data } from "./asset_config.mjs";
 
@@ -40,8 +40,6 @@ function loadLiminalTextureLib() {
 
     }
 }
-//simply use materials.xmaterial or materials["xmaterial"] and it will return a material for a THREE.js mesh
-let materials = {
-    
-}
+//simply use materials.xmaterial or materials["xmaterial"] and it will return a material for a three mesh
+let materials = {}
 export {Skybox, materials, loadLiminalTextureLib, skybox_texture}
