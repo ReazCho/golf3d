@@ -1,6 +1,7 @@
 import * as CANNON from "cannon-es";
 import { playRandomSoundEffect, playMusic } from "./Sounds.mjs";
 import { ballBody } from "./ball.mjs";
+import { menuConfig } from "./menu.mjs";
 
 let firingTheBall = {
   power: 1,
@@ -53,7 +54,7 @@ function initShootingUI() {
 
 
 function shoot() {
-  if(sfxEnabled){ //there is no pause menu so this should work for now
+  if(menuConfig.sfxEnabled){ //there is no pause menu so this should work for now
     playRandomSoundEffect();
   }
   // Is STATIC

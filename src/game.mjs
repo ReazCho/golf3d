@@ -9,17 +9,17 @@ import { Cylinder } from "./BuildingBlocks/Cylinder.mjs";
 //Visuals for the game
 import { Skybox, skybox_texture } from "./asset_loading/assets_3d.mjs";
 import { firingTheBall } from "./firingTheBall.mjs";
-import { initSoundEvents } from "./Sounds.mjs" 
+import { initSoundEvents } from "./Sounds.mjs"
 import { createPineTree } from "./BuildingBlock_no_collision/pine.mjs";
 import { createBall, ballMesh, ballBody } from "./ball.mjs";
 import { createNewEmitter, updateEmitters } from "./BuildingBlocks/Particle.mjs";
-import { Menu } from "./menu.mjs";
+import { Menu, initMenu, menuConfig } from "./menu.mjs";
 import { areColliding } from "./utils.mjs";
 import { createHillsBufferGeometry } from "./Terrain/Hills.mjs";
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 const orbitControls = true;
 
-let oldBallPosision = { x: 0, y: 0, z: 0 };
+let oldBallPosition = { x: 0, y: 0, z: 0 };
 
 function createGround() {
     // Create ground plane
@@ -74,31 +74,27 @@ function initLevel() {
     createPineTree(engine.scene, 25, 5, 2);
 }
 
+let ballDirectionMesh = [];
 function initBallDirectionArrows() {
-    let colors = [0xffd000, 0xff9900,0xff0000];
-    for(let i = 0; i < 3; i++) {
-        const ballDirectionGeometry = new THREE.ConeGeometry( .5, 5, 5 );
+    let colors = [0xffd000, 0xff9900, 0xff0000];
+    for (let i = 0; i < 3; i++) {
+        const ballDirectionGeometry = new THREE.ConeGeometry(.5, 5, 5);
         const ballDirectionMaterial = new THREE.MeshPhongMaterial({ color: colors[i], flatShading: true });
         ballDirectionMesh.push(new THREE.Mesh(ballDirectionGeometry, ballDirectionMaterial));
 
-        ballDirectionMesh[i].position.set(5, 30 + 4*i, 0)
-    
+        ballDirectionMesh[i].position.set(5, 30 + 4 * i, 0)
+
         engine.scene.add(ballDirectionMesh[i]);
     }
-
 }
 let time = 0, obx = 0, oby = 0, obz = 0;
 let controls = null;
-window.gameStarted = false;
-window.musicEnabled = true;
-window.sfxEnabled = true;
 function initGame() {
     //initSoundEvents();
-    const shouldMenuBeMade = false; //debug only
-    if(shouldMenuBeMade){
-        initMenu();
-    }else{
-        gameStarted = true;
+    if (menuConfig.showMenu) {
+        initMenu(initLevel);
+    } else {
+        menuConfig.gameStarted = true;
         initSoundEvents();
         initLevel();
         engine.draw2d = (() => {
@@ -150,11 +146,11 @@ function initGame() {
 
         // TODO: Playing sounds on ball bounce
         let bounceGranica = 2;
-        if(Math.abs(lastDX - ballBody.velocity.x) > bounceGranica || 
-        Math.abs(lastDY - ballBody.velocity.y) > bounceGranica ||
-        Math.abs(lastDZ - ballBody.velocity.z) > bounceGranica) {
+        if (Math.abs(lastDX - ballBody.velocity.x) > bounceGranica ||
+            Math.abs(lastDY - ballBody.velocity.y) > bounceGranica ||
+            Math.abs(lastDZ - ballBody.velocity.z) > bounceGranica) {
             console.log("TUP");
-            createNewEmitter(ballBody.position.x, ballBody.position.y, ballBody.position.z, "burst", {particle_cnt: 50, particle_lifetime: {min:0.2, max:0.5}, power: 0.05, fired: false})
+            createNewEmitter(ballBody.position.x, ballBody.position.y, ballBody.position.z, "burst", { particle_cnt: 50, particle_lifetime: { min: 0.2, max: 0.5 }, power: 0.05, fired: false })
         }
         lastDX = ballBody.velocity.x;
         lastDY = ballBody.velocity.y;
@@ -162,39 +158,13 @@ function initGame() {
 
         make_the_ball_static_when_is_not_moving();
 
-    });
-    function initMenu(){
-        let menu = new Menu();
-        // Set custom draw function
-        engine.draw2d = (() => {
-            engine.context2d.clearRect(0, 0, engine.canvas2d.width, engine.canvas2d.height);
-            engine.context2d.strokeRect(0, 0, canvas2d.width, canvas2d.height);
-            menu.draw()
-        });
-        engine.onmouseup = ((e) => {
-            let mouseX = e.clientX;
-            let mouseY = e.clientY;
-            console.log(e,mouseX,mouseY)
-            if(!gameStarted){
-                if(areColliding(mouseX,mouseY,1,1,275,200,250,100)){ //Play
-                    //initGame();
-                    initLevel();
-                    menu.startSimulation();
-                }
-                if(areColliding(mouseX,mouseY,1,1,175,475,200,75)){ //Music
-                    menu.toggleMusic()
-                }
-                if(areColliding(mouseX,mouseY,1,1,425,475,200,75)){ //Sfx
-                    menu.toggleSfx()
-                }
-            }
-        })
-    }
         adjust_the_ball_direction();
 
         show_the_ball_direction();
-    }
+
+    };
 }
+
 
 function make_the_ball_static_when_is_not_moving() {
     if (time % 100 == 0) {
@@ -234,10 +204,10 @@ function adjust_the_ball_direction() {
 }
 
 function show_the_ball_direction() {
-    for(let i = 0; i < 3; i++) {
-        if(ballDirectionMesh[i] !== undefined) {
+    for (let i = 0; i < 3; i++) {
+        if (ballDirectionMesh[i] !== undefined) {
             // Calculates the needed arrows
-            if(i <= Math.floor(Math.abs((firingTheBall.power+20)/100)*2)) {
+            if (i <= Math.floor(Math.abs((firingTheBall.power + 20) / 100) * 2)) {
                 ballDirectionMesh[i].visible = true;
 
                 ballDirectionMesh[i].position.set(
@@ -245,7 +215,7 @@ function show_the_ball_direction() {
                     ballMesh.position.y,
                     ballMesh.position.z + Math.sin(firingTheBall.direction) * 3.5 * (i + 1)
                 );
-                
+
                 ballDirectionMesh[i].rotation.x = 1.57079633;
                 ballDirectionMesh[i].rotation.y = 0;
                 ballDirectionMesh[i].rotation.z = firingTheBall.direction - 1.57079633;

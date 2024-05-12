@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import * as CANNON from "cannon-es";
+import { menuConfig } from "./menu.mjs";
 
 let engine = {
     // Start engine
@@ -136,7 +137,7 @@ function initEvents() {
 }
 // Redraw will be executed many times
 function redraw() {
-    if(gameStarted){
+    if(menuConfig.gameStarted){
         engine.cannonjs_world.step(1 / 20);
     }
     engine.context2d.save();
