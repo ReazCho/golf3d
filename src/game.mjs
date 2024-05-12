@@ -1,5 +1,5 @@
 import { engine } from "./engine.mjs";
-import * as THREE from "three.js";
+import * as THREE from "three";
 import * as CANNON from "cannon-es";
 import OrbitControls_ from 'three-orbit-controls';
 import { Ramp } from "./BuildingBlocks/Ramp.mjs";
@@ -15,10 +15,11 @@ import { createBall, ballMesh, ballBody } from "./ball.mjs";
 import { createNewEmitter, updateEmitters } from "./BuildingBlocks/Particle.mjs";
 import { Menu } from "./menu.mjs";
 import { areColliding } from "./utils.mjs";
-
+import { createHillsBufferGeometry } from "./Terrain/Hills.mjs";
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 const orbitControls = true;
 
-let oldBallPosition = { x: 0, y: 0, z: 0 };
+let oldBallPosision = { x: 0, y: 0, z: 0 };
 
 function createGround() {
     // Create ground plane
@@ -51,7 +52,7 @@ function initLights() {
     engine.scene.add(ambientLight);
 
     //directional light is white to not tint the phong material too much
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
     directionalLight.position.set(10, 20, 10);
     directionalLight.lookAt(0, 0, 0);
     engine.scene.add(directionalLight);
@@ -84,25 +85,23 @@ function initBallDirectionArrows() {
     
         engine.scene.add(ballDirectionMesh[i]);
     }
-}
 
+}
 let time = 0, obx = 0, oby = 0, obz = 0;
 let controls = null;
 window.gameStarted = false;
-let ballDirectionMesh = [];
-
 function initGame() {
     initSoundEvents();
 
     // Create ball and attach to window
     createBall(5, 30, 0);
 
+    createHillsBufferGeometry(10, 10, 100, 5, 20);
     // Init slider and buttons for firing the ball
     firingTheBall.initUI();
 
     // Init orbit controls
     if (orbitControls) {
-        const OrbitControls = new OrbitControls_(THREE);
         controls = new OrbitControls(engine.camera, engine.canvas2d);
         controls.target = ballMesh.position;
     }
@@ -154,7 +153,6 @@ function initGame() {
 
         show_the_ball_direction();
     }
-
     
     let menu = new Menu();
     // Set custom draw function
