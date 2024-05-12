@@ -1,8 +1,9 @@
-import {randomSounds, bgMusicFileName} from "./asset_config.mjs";
+import {randomSounds, bgMusicFileName,SoundsFalling} from "./asset_config.mjs";
 
 let preloadedSounds = {
     randomSoundsArr: [],
-    bgMusicSound: null
+    bgMusicSound: null,
+    bounceAudio: null
 };
 function initSounds() {
     for(let soundPath of randomSounds) {
@@ -10,6 +11,12 @@ function initSounds() {
         preloadedSounds.randomSoundsArr.push(audio);
     }
     preloadedSounds.bgMusicSound = new Audio(bgMusicFileName);
+    preloadedSounds.bounceAudio = new Audio(SoundsFalling);
 }
-
-export {preloadedSounds, initSounds};
+function initSoundsFalling() {
+    for(let soundPath of SoundsFalling) {
+        const audio = new Audio(soundPath);
+        preloadedSounds.randomSoundsArr.push(audio);
+    }
+}
+export {preloadedSounds,initSoundsFalling, initSounds};

@@ -6,12 +6,13 @@ import { Ramp } from "./BuildingBlocks/Ramp.mjs";
 import { BuildingBlock } from "./BuildingBlocks/BuildingBlock.mjs";
 import { MovingPlatform } from "./BuildingBlocks/MovingPlatform.mjs";
 import { Cylinder } from "./BuildingBlocks/Cylinder.mjs";
+import { GolfHole } from "./BuildingBlocks/GolfHole.mjs";
 //Visuals for the game
 import { Skybox, skybox_texture } from "./asset_loading/assets_3d.mjs";
 import { firingTheBall } from "./firingTheBall.mjs";
-import { initSoundEvents } from "./Sounds.mjs"
+import { initSoundEvents,playRandomSoundEffectFall } from "./Sounds.mjs"
 import { createPineTree } from "./BuildingBlock_no_collision/pine.mjs";
-import { createBall, ballMesh, ballBody } from "./ball.mjs";
+import { createBall, ballMesh, ballBody,deleteBall } from "./ball.mjs";
 import { createNewEmitter, updateEmitters } from "./BuildingBlocks/Particle.mjs";
 import { Menu, initMenu, menuConfig } from "./menu.mjs";
 import { areColliding } from "./utils.mjs";
@@ -49,7 +50,7 @@ function initCamera() {
 
 function initLights() {
     //Ambient light is now the skybox
-    const ambientLight = new THREE.AmbientLight(skybox_texture, 0.5);
+    const ambientLight = new THREE.AmbientLight(skybox_texture, 1);
     engine.scene.add(ambientLight);
 
     //directional light is white to not tint the phong material too much
@@ -72,6 +73,7 @@ function initLevel() {
 
     new MovingPlatform(15, 20, 20, 30, 30, 30, 20, 1, 15);
     new Cylinder(25, 0, 2, 5, 5);
+    new GolfHole(51.2, -6, 0, 1.8, 1, 2.1, 64, 12, 51.2, -5.9, 0, 1, 2, 2)
     createPineTree(0, 20, 0);
     flag(0,2,2);
 }
@@ -83,7 +85,6 @@ function initBallDirectionArrows() {
         const ballDirectionGeometry = new THREE.ConeGeometry(.5, 5, 5);
         const ballDirectionMaterial = new THREE.MeshPhongMaterial({ color: colors[i], flatShading: true });
         ballDirectionMesh.push(new THREE.Mesh(ballDirectionGeometry, ballDirectionMaterial));
-
         ballDirectionMesh[i].position.set(5, 30 + 4 * i, 0)
 
         engine.scene.add(ballDirectionMesh[i]);
@@ -99,14 +100,9 @@ function initGame() {
         menuConfig.gameStarted = true;
         initSoundEvents();
         initLevel();
-        engine.draw2d = (() => {
-            engine.context2d.clearRect(0, 0, engine.canvas2d.width, engine.canvas2d.height);
-            engine.context2d.strokeRect(0, 0, canvas2d.width, canvas2d.height);
-        });
     }
-
     // Create ball and attach to window
-    createBall(5, 30, 0);
+    createBall(11, 30, 0);
 
     createHillsBufferGeometry(10, 10, 100, 5, 20);
     // Init slider and buttons for firing the ball
@@ -128,8 +124,6 @@ function initGame() {
     // Init skybox
     const skybox = new Skybox();
 
-    //initLevel();
-
     //DEBUG spawn test emitter
 
     let lastDX, lastDY, lastDZ;
@@ -146,24 +140,35 @@ function initGame() {
         // Update ball mesh position
         ballMesh.position.copy(ballBody.position);
 
-        // TODO: Playing sounds on ball bounce
-        let bounceGranica = 2;
-        if (Math.abs(lastDX - ballBody.velocity.x) > bounceGranica ||
-            Math.abs(lastDY - ballBody.velocity.y) > bounceGranica ||
-            Math.abs(lastDZ - ballBody.velocity.z) > bounceGranica) {
-            console.log("TUP");
-            createNewEmitter(ballBody.position.x, ballBody.position.y, ballBody.position.z, "burst", { particle_cnt: 50, particle_lifetime: { min: 0.2, max: 0.5 }, power: 0.05, fired: false })
-        }
-        lastDX = ballBody.velocity.x;
-        lastDY = ballBody.velocity.y;
-        lastDZ = ballBody.velocity.z;
+        const bounceThreshold = 3;
 
+        function checkBounce(lastVelocities, currentVelocities) {
+            return Object.keys(currentVelocities).some(axis =>
+                Math.abs(lastVelocities[axis] - currentVelocities[axis]) > bounceThreshold
+            );
+        }
+
+        const currentVelocities = { x: ballBody.velocity.x, y: ballBody.velocity.y, z: ballBody.velocity.z };
+
+        if (checkBounce({ x: lastDX, y: lastDY, z: lastDZ }, currentVelocities)) {
+            console.log("TUP");
+            createNewEmitter(ballBody.position.x, ballBody.position.y, ballBody.position.z, "burst", {particle_cnt: 50, particle_lifetime: {min:0.2, max:0.5}, power: 0.05, fired: false})
+            playRandomSoundEffectFall();
+        }
+        lastDX = currentVelocities.x;
+        lastDY = currentVelocities.y;
+        lastDZ = currentVelocities.z;
         make_the_ball_static_when_is_not_moving();
 
         adjust_the_ball_direction();
 
         show_the_ball_direction();
 
+        if(ballBody.position.y < -50){ //respawns the ball if it has fallen beneath the map
+            ballBody.position.set(firingTheBall.shotFromWhere.x, firingTheBall.shotFromWhere.y, firingTheBall.shotFromWhere.z);
+            ballBody.type = CANNON.Body.STATIC
+            firingTheBall.isBallShot = false;
+        }
     };
 }
 
@@ -193,6 +198,7 @@ function make_the_ball_static_when_is_not_moving() {
         if (error < 1) {
             ballBody.type = CANNON.Body.STATIC;
             oldBallPosition = { x: 0, y: 0, z: 0 };
+            firingTheBall.isBallShot = false;
         }
 
         obx = Math.abs(ballMesh.position.x);
@@ -207,6 +213,11 @@ function adjust_the_ball_direction() {
 
 function show_the_ball_direction() {
     for (let i = 0; i < 3; i++) {
+        if(firingTheBall.isBallShot){
+            ballDirectionMesh[i].visible = false;
+
+            continue;
+        }
         if (ballDirectionMesh[i] !== undefined) {
             // Calculates the needed arrows
             if (i <= Math.floor(Math.abs((firingTheBall.power + 20) / 100) * 2)) {
@@ -218,9 +229,10 @@ function show_the_ball_direction() {
                     ballMesh.position.z + Math.sin(firingTheBall.direction) * 3.5 * (i + 1)
                 );
 
-                ballDirectionMesh[i].rotation.x = 1.57079633;
+
+                ballDirectionMesh[i].rotation.x = Math.PI/2;
                 ballDirectionMesh[i].rotation.y = 0;
-                ballDirectionMesh[i].rotation.z = firingTheBall.direction - 1.57079633;
+                ballDirectionMesh[i].rotation.z = firingTheBall.direction - Math.PI/2;
 
             } else {
                 ballDirectionMesh[i].visible = false;
@@ -233,4 +245,4 @@ let game = {
     init: initGame
 }
 
-export { game }
+export { game };

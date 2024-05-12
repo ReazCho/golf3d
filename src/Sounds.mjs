@@ -8,7 +8,11 @@ function playRandomSoundEffect(volume = 0.7) {
   soundFile.play();
 }
 
-
+function playRandomSoundEffectFall(volume = 0.7) {
+  let soundFile = preloadedSounds.bounceAudio;
+  soundFile.volume = volume;
+  soundFile.play();
+}
 function playBackgroundMusic(volume = 0.4) {
   let isMusicPlaying = false;
   var audio = preloadedSounds.bgMusicSound;
@@ -36,4 +40,4 @@ function initSoundEvents() {
   });
 }
 
-export {playBackgroundMusic as playMusic, playRandomSoundEffect, initSoundEvents};
+export {playBackgroundMusic as playMusic, playRandomSoundEffect, initSoundEvents,playRandomSoundEffectFall};

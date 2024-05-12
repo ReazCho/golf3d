@@ -29,6 +29,7 @@ function initMenu(onPlayButtonCB) {
             }
         }
     })
+    return menu;
 }
 
 class Menu {
