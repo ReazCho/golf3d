@@ -63,6 +63,7 @@ function shoot() {
   firingTheBall.shotFromWhere.x = ballBody.position.x;
   firingTheBall.shotFromWhere.y = ballBody.position.y;
   firingTheBall.shotFromWhere.z = ballBody.position.z;
+
   // Is STATIC
   if (ballBody.type == CANNON.Body.STATIC) {
     ballBody.type = CANNON.Body.DYNAMIC;
