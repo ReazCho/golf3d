@@ -99,30 +99,7 @@ function initGame() {
         menuConfig.gameStarted = true;
         initSoundEvents();
         initLevel();
-        engine.draw2d = (() => {
-            engine.context2d.clearRect(0, 0, engine.canvas2d.width, engine.canvas2d.height);
-            engine.context2d.strokeRect(0, 0, canvas2d.width, canvas2d.height);
-            menu.draw()
-        });
     }
-    engine.onmouseup = ((e) => {
-        let mouseX = e.clientX;
-        let mouseY = e.clientY;
-        console.log(e,mouseX,mouseY)
-        //play button
-        if(areColliding(mouseX,mouseY,1,1,275,200,250,100)){ //Play
-            //initGame();
-            gameStarted = true;
-            initLevel();
-            menu.startSimulation();
-        }
-        if(areColliding(mouseX,mouseY,1,1,275,200,250,100)){ //Music
-            menu.toggleMusic()
-        }
-        if(areColliding(mouseX,mouseY,1,1,275,200,250,100)){ //Sfx
-            menu.toggleSfx()
-        }
-    })
     // Create ball and attach to window
     createBall(11, 30, 0);
 
@@ -232,14 +209,12 @@ function make_the_ball_static_when_is_not_moving() {
 function adjust_the_ball_direction() {
     firingTheBall.direction = Math.atan2(ballMesh.position.z - engine.camera.position.z, ballMesh.position.x - engine.camera.position.x);
 }
-function show_the_ball_direction() {
-    for (let i = 0; i < 3; i++) {
-}
 
 function show_the_ball_direction() {
     for (let i = 0; i < 3; i++) {
         if(firingTheBall.isBallShot){
             ballDirectionMesh[i].visible = false;
+
             continue;
         }
         if (ballDirectionMesh[i] !== undefined) {
@@ -269,4 +244,4 @@ let game = {
     init: initGame
 }
 
-export { game }
+export { game };
