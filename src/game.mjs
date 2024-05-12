@@ -151,7 +151,7 @@ function initGame() {
             Math.abs(lastDY - ballBody.velocity.y) > bounceGranica ||
             Math.abs(lastDZ - ballBody.velocity.z) > bounceGranica) {
             console.log("TUP");
-            createNewEmitter(ballBody.position.x, ballBody.position.y, ballBody.position.z, "burst", { particle_cnt: 50, particle_lifetime: { min: 0.2, max: 0.5 }, power: 0.05, fired: false })
+            createNewEmitter(ballBody.position.x, ballBody.position.y, ballBody.position.z, "burst", { particle_cnt: 10, particle_lifetime: { min: 0.2, max: 0.5 }, power: 0.05, fired: false})
         }
         lastDX = ballBody.velocity.x;
         lastDY = ballBody.velocity.y;
