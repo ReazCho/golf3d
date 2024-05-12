@@ -7,6 +7,8 @@ let firingTheBall = {
   power: 1,
   direction: 0,
   Shoot: () => { shoot() },
+  isBallShot: false,
+  shotFromWhere: {x: 0, y: 0, z: 0},
   initUI: initShootingUI
 };
 
@@ -54,9 +56,14 @@ function initShootingUI() {
 
 
 function shoot() {
+  firingTheBall.isBallShot = true;
   if(menuConfig.sfxEnabled){ //there is no pause menu so this should work for now
     playRandomSoundEffect();
   }
+  firingTheBall.shotFromWhere.x = ballBody.position.x;
+  firingTheBall.shotFromWhere.y = ballBody.position.y;
+  firingTheBall.shotFromWhere.z = ballBody.position.z;
+
   // Is STATIC
   if (ballBody.type == CANNON.Body.STATIC) {
     ballBody.type = CANNON.Body.DYNAMIC;

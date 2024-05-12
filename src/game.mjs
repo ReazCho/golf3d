@@ -18,6 +18,7 @@ import { Menu, initMenu, menuConfig } from "./menu.mjs";
 import { areColliding } from "./utils.mjs";
 import { createHillsBufferGeometry } from "./Terrain/Hills.mjs";
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { forEach } from "lodash";
 const orbitControls = true;
 
 let oldBallPosition = { x: 0, y: 0, z: 0 };
@@ -73,7 +74,7 @@ function initLevel() {
     new MovingPlatform(15, 20, 20, 30, 30, 30, 20, 1, 15);
     new Cylinder(25, 0, 2, 5, 5);
     new GolfHole(51.2, -6, 0, 1.8, 1, 2.1, 64, 12, 51.2, -5.9, 0, 1, 2, 2)
-    createPineTree(engine.scene, 25, 5, 2);
+    createPineTree(0, 20, 0);
 }
 
 let ballDirectionMesh = [];
@@ -83,7 +84,6 @@ function initBallDirectionArrows() {
         const ballDirectionGeometry = new THREE.ConeGeometry(.5, 5, 5);
         const ballDirectionMaterial = new THREE.MeshPhongMaterial({ color: colors[i], flatShading: true });
         ballDirectionMesh.push(new THREE.Mesh(ballDirectionGeometry, ballDirectionMaterial));
-
         ballDirectionMesh[i].position.set(5, 30 + 4 * i, 0)
 
         engine.scene.add(ballDirectionMesh[i]);
@@ -91,7 +91,6 @@ function initBallDirectionArrows() {
 }
 let time = 0, obx = 0, oby = 0, obz = 0;
 let controls = null;
-window.gameStarted = false;
 function initGame() {
     //initSoundEvents();
     if (menuConfig.showMenu) {
@@ -147,8 +146,6 @@ function initGame() {
     // Init skybox
     const skybox = new Skybox();
 
-   // initLevel();
-
     //DEBUG spawn test emitter
 
     let lastDX, lastDY, lastDZ;
@@ -180,17 +177,20 @@ function initGame() {
             createNewEmitter(ballBody.position.x, ballBody.position.y, ballBody.position.z, "burst", {particle_cnt: 50, particle_lifetime: {min:0.2, max:0.5}, power: 0.05, fired: false})
             playRandomSoundEffectFall();
         }
-
         lastDX = currentVelocities.x;
         lastDY = currentVelocities.y;
         lastDZ = currentVelocities.z;
-
         make_the_ball_static_when_is_not_moving();
 
         adjust_the_ball_direction();
 
         show_the_ball_direction();
 
+        if(ballBody.position.y < -50){ //respawns the ball if it has fallen beneath the map
+            ballBody.position.set(firingTheBall.shotFromWhere.x, firingTheBall.shotFromWhere.y, firingTheBall.shotFromWhere.z);
+            ballBody.type = CANNON.Body.STATIC
+            firingTheBall.isBallShot = false;
+        }
     };
 }
 
@@ -220,6 +220,7 @@ function make_the_ball_static_when_is_not_moving() {
         if (error < 1) {
             ballBody.type = CANNON.Body.STATIC;
             oldBallPosition = { x: 0, y: 0, z: 0 };
+            firingTheBall.isBallShot = false;
         }
 
         obx = Math.abs(ballMesh.position.x);
@@ -230,39 +231,17 @@ function make_the_ball_static_when_is_not_moving() {
 
 function adjust_the_ball_direction() {
     firingTheBall.direction = Math.atan2(ballMesh.position.z - engine.camera.position.z, ballMesh.position.x - engine.camera.position.x);
-    if (engine.camera.position.y >= 460 || engine.camera.position.y <= -460 || engine.camera.position.z >= 460 || engine.camera.position.z <= -460 || engine.camera.position.x >= 460 || engine.camera.position.x <= -460) {
-        engine.camera.position.set(0, 20, 80);
-        engine.camera.lookAt(0, 10, 0);
-        engine.camera.far = 10000;
-    }
 }
-let menu = new Menu(); 
-window.music = true;
-window.sfx = true; 
-//   engine.onkeydown = function(keyCode) {
-    //  if (engine.isKeyPressed[68]) {
-     //     deleteBall();
-      //    console.log("FDS")
-          //buton D za mahane
-    //  }
-  //}
-  const cooldownDuration = 5000; // 50 secundi
-  let lastOperationTime = 0;
-  
-  engine.onkeydown = function (keyCode) {
-      const currentTime = Date.now();
-  
-      if (engine.isKeyPressed[65] && currentTime - lastOperationTime >= cooldownDuration) {
-          createBall(11, 30, 0);     
-  
-          lastOperationTime = currentTime;
-      } else if (engine.isKeyPressed[65]) {
-          console.log("Cooldown active.");
-      }
-  };
+function show_the_ball_direction() {
+    for (let i = 0; i < 3; i++) {
+}
 
 function show_the_ball_direction() {
     for (let i = 0; i < 3; i++) {
+        if(firingTheBall.isBallShot){
+            ballDirectionMesh[i].visible = false;
+            continue;
+        }
         if (ballDirectionMesh[i] !== undefined) {
             // Calculates the needed arrows
             if (i <= Math.floor(Math.abs((firingTheBall.power + 20) / 100) * 2)) {
@@ -274,9 +253,10 @@ function show_the_ball_direction() {
                     ballMesh.position.z + Math.sin(firingTheBall.direction) * 3.5 * (i + 1)
                 );
 
-                ballDirectionMesh[i].rotation.x = 1.57079633;
+
+                ballDirectionMesh[i].rotation.x = Math.PI/2;
                 ballDirectionMesh[i].rotation.y = 0;
-                ballDirectionMesh[i].rotation.z = firingTheBall.direction - 1.57079633;
+                ballDirectionMesh[i].rotation.z = firingTheBall.direction - Math.PI/2;
 
             } else {
                 ballDirectionMesh[i].visible = false;
