@@ -17,6 +17,7 @@ import { Menu, initMenu, menuConfig } from "./menu.mjs";
 import { areColliding } from "./utils.mjs";
 import { createHillsBufferGeometry } from "./Terrain/Hills.mjs";
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { forEach } from "lodash";
 const orbitControls = true;
 
 let oldBallPosition = { x: 0, y: 0, z: 0 };
@@ -161,7 +162,12 @@ function initGame() {
         adjust_the_ball_direction();
 
         show_the_ball_direction();
-
+        
+        if(ballBody.position.y < -50){ //respawns the ball if it has fallen beneath the map
+            ballBody.position.set(firingTheBall.shotFromWhere.x, firingTheBall.shotFromWhere.y, firingTheBall.shotFromWhere.z);
+            ballBody.type = CANNON.Body.STATIC
+            firingTheBall.isBallShot = false;
+        }
     };
 }
 
@@ -188,9 +194,10 @@ function make_the_ball_static_when_is_not_moving() {
             error += bz + obz;
         }
 
-        if (error < 1) {
+        if (error < 40) { //tova chislo trqbva da se promeni
             ballBody.type = CANNON.Body.STATIC;
             oldBallPosition = { x: 0, y: 0, z: 0 };
+            firingTheBall.isBallShot = false;
         }
 
         obx = Math.abs(ballMesh.position.x);
@@ -205,6 +212,11 @@ function adjust_the_ball_direction() {
 
 function show_the_ball_direction() {
     for (let i = 0; i < 3; i++) {
+        if(firingTheBall.isBallShot){
+            console.log("djfjdjifhjdn")
+            ballDirectionMesh[i].visible = false;
+            continue;
+        }
         if (ballDirectionMesh[i] !== undefined) {
             // Calculates the needed arrows
             if (i <= Math.floor(Math.abs((firingTheBall.power + 20) / 100) * 2)) {
@@ -216,9 +228,9 @@ function show_the_ball_direction() {
                     ballMesh.position.z + Math.sin(firingTheBall.direction) * 3.5 * (i + 1)
                 );
 
-                ballDirectionMesh[i].rotation.x = 1.57079633;
+                ballDirectionMesh[i].rotation.x = Math.PI/2;
                 ballDirectionMesh[i].rotation.y = 0;
-                ballDirectionMesh[i].rotation.z = firingTheBall.direction - 1.57079633;
+                ballDirectionMesh[i].rotation.z = firingTheBall.direction - Math.PI/2;
 
             } else {
                 ballDirectionMesh[i].visible = false;
