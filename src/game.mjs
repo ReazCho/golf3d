@@ -9,7 +9,7 @@ import { Cylinder } from "./BuildingBlocks/Cylinder.mjs";
 //Visuals for the game
 import { Skybox, skybox_texture } from "./asset_loading/assets_3d.mjs";
 import { firingTheBall } from "./firingTheBall.mjs";
-import { initSoundEvents } from "./Sounds.mjs";
+import { initSoundEvents } from "./Sounds.mjs" 
 import { createPineTree } from "./BuildingBlock_no_collision/pine.mjs";
 import { createBall, ballMesh, ballBody } from "./ball.mjs";
 import { createNewEmitter, updateEmitters } from "./BuildingBlocks/Particle.mjs";
@@ -90,8 +90,22 @@ function initBallDirectionArrows() {
 let time = 0, obx = 0, oby = 0, obz = 0;
 let controls = null;
 window.gameStarted = false;
+window.musicEnabled = true;
+window.sfxEnabled = true;
 function initGame() {
-    initSoundEvents();
+    //initSoundEvents();
+    const shouldMenuBeMade = false; //debug only
+    if(shouldMenuBeMade){
+        initMenu();
+    }else{
+        gameStarted = true;
+        initSoundEvents();
+        initLevel();
+        engine.draw2d = (() => {
+            engine.context2d.clearRect(0, 0, engine.canvas2d.width, engine.canvas2d.height);
+            engine.context2d.strokeRect(0, 0, canvas2d.width, canvas2d.height);
+        });
+    }
 
     // Create ball and attach to window
     createBall(5, 30, 0);
@@ -116,7 +130,6 @@ function initGame() {
     // Init skybox
     const skybox = new Skybox();
 
-    // IMPORTANT! - called when the play button is clicked
     //initLevel();
 
     //DEBUG spawn test emitter
@@ -149,38 +162,38 @@ function initGame() {
 
         make_the_ball_static_when_is_not_moving();
 
+    });
+    function initMenu(){
+        let menu = new Menu();
+        // Set custom draw function
+        engine.draw2d = (() => {
+            engine.context2d.clearRect(0, 0, engine.canvas2d.width, engine.canvas2d.height);
+            engine.context2d.strokeRect(0, 0, canvas2d.width, canvas2d.height);
+            menu.draw()
+        });
+        engine.onmouseup = ((e) => {
+            let mouseX = e.clientX;
+            let mouseY = e.clientY;
+            console.log(e,mouseX,mouseY)
+            if(!gameStarted){
+                if(areColliding(mouseX,mouseY,1,1,275,200,250,100)){ //Play
+                    //initGame();
+                    initLevel();
+                    menu.startSimulation();
+                }
+                if(areColliding(mouseX,mouseY,1,1,175,475,200,75)){ //Music
+                    menu.toggleMusic()
+                }
+                if(areColliding(mouseX,mouseY,1,1,425,475,200,75)){ //Sfx
+                    menu.toggleSfx()
+                }
+            }
+        })
+    }
         adjust_the_ball_direction();
 
         show_the_ball_direction();
     }
-    
-    let menu = new Menu();
-    // Set custom draw function
-    window.music = true;
-    window.sfx = true;
-    engine.draw2d = (() => {
-        engine.context2d.clearRect(0, 0, engine.canvas2d.width, engine.canvas2d.height);
-        engine.context2d.strokeRect(0, 0, canvas2d.width, canvas2d.height);
-        menu.draw()
-    });
-    engine.onmouseup = ((e) => {
-        let mouseX = e.clientX;
-        let mouseY = e.clientY;
-        console.log(e,mouseX,mouseY)
-        //play button
-        if(areColliding(mouseX,mouseY,1,1,275,200,250,100)){ //Play
-            //initGame();
-            gameStarted = true;
-            initLevel();
-            menu.startSimulation();
-        }
-        if(areColliding(mouseX,mouseY,1,1,275,200,250,100)){ //Music
-            menu.toggleMusic()
-        }
-        if(areColliding(mouseX,mouseY,1,1,275,200,250,100)){ //Sfx
-            menu.toggleSfx()
-        }
-    })
 }
 
 function make_the_ball_static_when_is_not_moving() {

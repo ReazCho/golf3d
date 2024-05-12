@@ -1,4 +1,6 @@
 import { engine } from "./engine.mjs";
+import { createButton } from "./utils.mjs";
+import { playMusic } from "./Sounds.mjs";
 //gnusni hardcodnati chisla
 
 class Menu {
@@ -6,40 +8,34 @@ class Menu {
     }
     draw(){
         //play button
-        engine.context2d.fillStyle = "red";
-        engine.context2d.fillRect(275,200,250,100);
-        engine.context2d.fillStyle = "white";
-        engine.context2d.font = "50px Arial";
-        engine.context2d.fillText("Play",350,267);
-        //music toggle button - will be replaced with icon
-        if(music){
-            engine.context2d.fillStyle = "red";
+        createButton("Play",275,175,250,100,"red",50,"white");
+        //skins button - no functionality
+        createButton("Skins",275,300,250,100,"red",50,"white");
+        //music toggle button - should be replaced with icon
+        if(musicEnabled){
+            createButton("Toggle music",175,475,200,75,"red",30,"white");
         }else{
-            engine.context2d.fillStyle = "grey";
+            createButton("Toggle music",175,475,200,75,"grey",30,"white");
         }
-        engine.context2d.fillRect(175,350,200,75);
-        engine.context2d.fillStyle = "white";
-        engine.context2d.font = "30px Arial";
-        engine.context2d.fillText("Toggle music",190,400);
-        //sfx toggle button - will be replaced with icon
-        if(sfx){
-            engine.context2d.fillStyle = "red";
+        //SFX toggle button - should be replaced with icon
+        if(sfxEnabled){
+            createButton("Toggle SFX",425,475,200,75,"red",30,"white");
         }else{
-            engine.context2d.fillStyle = "grey";
+            createButton("Toggle SFX",425,475,200,75,"grey",30,"white");
         }
-        engine.context2d.fillRect(425,350,200,75);
-        engine.context2d.fillStyle = "white";
-        engine.context2d.font = "30px Arial";
-        engine.context2d.fillText("Toggle SFX",447,400);
     }
     startSimulation(){
         engine.context2d.globalAlpha = 0;
+        gameStarted = true;
+        if(musicEnabled){ //there is no pause menu so this should work for now
+            playMusic();
+        }
     }
     toggleMusic(){
-        music = !music
+        musicEnabled = !musicEnabled
     }
     toggleSfx(){
-        sfx = !sfx
+        sfxEnabled = !sfxEnabled
     }
 }
 
