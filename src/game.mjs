@@ -72,6 +72,19 @@ function initLevel() {
     new MovingPlatform(15, 20, 20, 30, 30, 30, 20, 1, 15);
     new Cylinder(25, 0, 2, 5, 5);
     createPineTree(engine.scene, 25, 5, 2);
+}
+
+function initBallDirectionArrows() {
+    let colors = [0xffd000, 0xff9900,0xff0000];
+    for(let i = 0; i < 3; i++) {
+        const ballDirectionGeometry = new THREE.ConeGeometry( .5, 5, 5 );
+        const ballDirectionMaterial = new THREE.MeshPhongMaterial({ color: colors[i], flatShading: true });
+        ballDirectionMesh.push(new THREE.Mesh(ballDirectionGeometry, ballDirectionMaterial));
+
+        ballDirectionMesh[i].position.set(5, 30 + 4*i, 0)
+    
+        engine.scene.add(ballDirectionMesh[i]);
+    }
 
 }
 let time = 0, obx = 0, oby = 0, obz = 0;
@@ -98,6 +111,8 @@ function initGame() {
 
     initLights();
 
+    initBallDirectionArrows();
+
     // Init skybox
     const skybox = new Skybox();
 
@@ -109,7 +124,7 @@ function initGame() {
     let lastDX, lastDY, lastDZ;
 
     // Set custom update function
-    engine.update = (() => {
+    engine.update = () => {
 
         time++;
         controls.update();
@@ -132,43 +147,12 @@ function initGame() {
         lastDY = ballBody.velocity.y;
         lastDZ = ballBody.velocity.z;
 
+        make_the_ball_static_when_is_not_moving();
 
-        // Makes the ball static when it isn't moving
-        if (time % 100 == 0) {
-            let error = 0, bx = Math.abs(ballMesh.position.x), by = Math.abs(ballMesh.position.y), bz = Math.abs(ballMesh.position.z);
+        adjust_the_ball_direction();
 
-            if (bx - obx >= 0) {
-                error = bx - obx;
-            } else {
-                error = bx + obx;
-            }
-
-            if (by - oby >= 0) {
-                error += by - oby;
-            } else {
-                error += by + oby;
-            }
-
-            if (bz - obz >= 0) {
-                error += bz - obz;
-            } else {
-                error += bz + obz;
-            }
-
-            if (error < 1) {
-                ballBody.type = CANNON.Body.STATIC;
-                oldBallPosision = { x: 0, y: 0, z: 0 };
-            }
-
-            obx = Math.abs(ballMesh.position.x);
-            oby = Math.abs(ballMesh.position.y);
-            obz = Math.abs(ballMesh.position.z);
-        }
-
-        // Gets the angle between the camera and the ball so you can shoot at the direction you are looking
-        firingTheBall.direction = Math.atan2(ballMesh.position.z - engine.camera.position.z, ballMesh.position.x - engine.camera.position.x);
-    });
-
+        show_the_ball_direction();
+    }
     
     let menu = new Menu();
     // Set custom draw function
@@ -198,6 +182,67 @@ function initGame() {
         }
     })
 }
+
+function make_the_ball_static_when_is_not_moving() {
+    if (time % 100 == 0) {
+        let error = 0, bx = Math.abs(ballMesh.position.x), by = Math.abs(ballMesh.position.y), bz = Math.abs(ballMesh.position.z);
+
+        if (bx - obx >= 0) {
+            error = bx - obx;
+        } else {
+            error = bx + obx;
+        }
+
+        if (by - oby >= 0) {
+            error += by - oby;
+        } else {
+            error += by + oby;
+        }
+
+        if (bz - obz >= 0) {
+            error += bz - obz;
+        } else {
+            error += bz + obz;
+        }
+
+        if (error < 1) {
+            ballBody.type = CANNON.Body.STATIC;
+            oldBallPosition = { x: 0, y: 0, z: 0 };
+        }
+
+        obx = Math.abs(ballMesh.position.x);
+        oby = Math.abs(ballMesh.position.y);
+        obz = Math.abs(ballMesh.position.z);
+    }
+}
+
+function adjust_the_ball_direction() {
+    firingTheBall.direction = Math.atan2(ballMesh.position.z - engine.camera.position.z, ballMesh.position.x - engine.camera.position.x);
+}
+
+function show_the_ball_direction() {
+    for(let i = 0; i < 3; i++) {
+        if(ballDirectionMesh[i] !== undefined) {
+            // Calculates the needed arrows
+            if(i <= Math.floor(Math.abs((firingTheBall.power+20)/100)*2)) {
+                ballDirectionMesh[i].visible = true;
+
+                ballDirectionMesh[i].position.set(
+                    ballMesh.position.x + Math.cos(firingTheBall.direction) * 3.5 * (i + 1),
+                    ballMesh.position.y,
+                    ballMesh.position.z + Math.sin(firingTheBall.direction) * 3.5 * (i + 1)
+                );
+                
+                ballDirectionMesh[i].rotation.x = 1.57079633;
+                ballDirectionMesh[i].rotation.y = 0;
+                ballDirectionMesh[i].rotation.z = firingTheBall.direction - 1.57079633;
+
+            } else {
+                ballDirectionMesh[i].visible = false;
+            }
+        }
+    }
+};
 
 let game = {
     init: initGame
