@@ -71,7 +71,7 @@ function initLevel() {
 
     new MovingPlatform(15, 20, 20, 30, 30, 30, 20, 1, 15);
     new Cylinder(25, 0, 2, 5, 5);
-    createPineTree(engine.scene, 25, 5, 2);
+    createPineTree(0, 20, 0);
 }
 
 let ballDirectionMesh = [];
