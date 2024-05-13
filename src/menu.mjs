@@ -2,6 +2,7 @@ import { engine } from "./engine.mjs";
 import { createButton } from "./utils.mjs";
 import { playMusic } from "./Sounds.mjs";
 import { areColliding } from "./utils.mjs";
+import { firingTheBall } from "./firingTheBall.mjs";
 
 function initMenu(onPlayButtonCB) {
     let menu = new Menu();
@@ -14,7 +15,6 @@ function initMenu(onPlayButtonCB) {
     engine.onmouseup = ((e) => {
         let mouseX = e.clientX;
         let mouseY = e.clientY;
-        console.log(e, mouseX, mouseY)
         if (!menuConfig.gameStarted) {
             if (areColliding(mouseX, mouseY, 1, 1, 275, 200, 250, 100)) { //Play
                 //initGame();
@@ -58,6 +58,7 @@ class Menu {
         menuConfig.gameStarted = true;
         if(menuConfig.musicEnabled){ //there is no pause menu so this should work for now
             playMusic();
+            firingTheBall.initUI();
         }
     }
     toggleMusic(){
