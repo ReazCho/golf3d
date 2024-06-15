@@ -57,7 +57,7 @@ class Particle {
         this.isDead = true;
         engine.scene.remove(this.sprite)
         this.material.dispose()
-        console.log("Killed particle")
+        // console.log("Killed particle")
     }
 }
 

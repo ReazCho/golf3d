@@ -9,14 +9,16 @@ function flag(x,y,z){
     let poleMesh = new THREE.Mesh(poleGeom, materials.Metal1);
     poleMesh.position.set(25, poleHeight/2 ,0);
     flagGroup.add(poleMesh);
-    flagGroup.position.set(x, y, z);
 
     let flagSGeom =  new THREE.PlaneGeometry( 7, 5 );
-    let flagSMesh = new THREE.Mesh(flagSGeom, materials.flag);
+
+    materials.Flag.side = THREE.DoubleSide;
+    let flagSMesh = new THREE.Mesh(flagSGeom, materials.Flag);
     flagSMesh.position.set(29, poleHeight-3,0);
     flagGroup.add(flagSMesh);
-    flagGroup.position.set(x, y, z);
 
+
+    flagGroup.position.set(x, y, z);
     engine.scene.add(flagGroup);
     return flagGroup;
 }

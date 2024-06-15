@@ -78,7 +78,7 @@ class Ramp {
 
         border1.position.set(0, 1, -width / 2); // Adjusted height for visual alignment
         border2.position.set(0, 1, width / 2);
-        cube.position.set(0, 0.5, 0);
+        cube.position.set(0, 0, 0);
 
         // Group the objects for transformation
         let rampGroup = new THREE.Group();

@@ -152,7 +152,6 @@ function redraw() {
 };
 
 function default_draw() {
-    console.log("ZZZ");
     engine.context2d.clearRect(0, 0, engine.canvas2d.width, engine.canvas2d.height);
     engine.context2d.globalAlpha = 1;
     engine.context2d.fillStyle = "#FF0000";
