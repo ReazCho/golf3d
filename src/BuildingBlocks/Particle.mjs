@@ -110,7 +110,7 @@ class Emitter {
                             (Math.random() - 0.5) * 2 * this.data.power,
                             (Math.random() - 0.5) * 2 * this.data.power,
                             // Particle color
-                            2, 0x013220, _lft
+                            2, 0x90ee90, _lft
                         ))
                     }
                     this.data.fired = true;

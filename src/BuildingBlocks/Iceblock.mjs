@@ -17,7 +17,7 @@ class Ice{
         groundMaterialPhysics.restitution = 0.5; // Set the restitution coefficient to 0.5 (adjust as needed)
         groundMaterialPhysics.friction = 0.5;
         var cubeShape = new CANNON.Box(new CANNON.Vec3(width/2, height/2, depth/2));
-        var cubeBody = new CANNON.Body({ mass: 1000, material: groundMaterialPhysics});
+        var cubeBody = new CANNON.Body({ mass: 0, material: groundMaterialPhysics});
         cubeBody.addShape(cubeShape);
         cubeBody.position.set(x, y, z);
         cubeBody.type = CANNON.Body.STATIC;

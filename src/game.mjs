@@ -11,7 +11,6 @@ import { GolfHole } from "./BuildingBlocks/GolfHole.mjs";
 import { Skybox, skybox_texture } from "./asset_loading/assets_3d.mjs";
 import { firingTheBall } from "./firingTheBall.mjs";
 import { initSoundEvents,playRandomSoundEffectFall } from "./Sounds.mjs"
-import { createPineTree } from "./BuildingBlock_no_collision/pine.mjs";
 import { createBall, ballMesh, ballBody,deleteBall } from "./ball.mjs";
 import { createNewEmitter, updateEmitters } from "./BuildingBlocks/Particle.mjs";
 import { Menu, initMenu, menuConfig } from "./menu.mjs";
@@ -21,7 +20,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { forEach } from "lodash";
 import { UIAddObj } from './LevelEditor/ObjectAdd.mjs'
 import {flag} from "./BuildingBlock_no_collision/flag.mjs"
-import { createHillsBufferGeometry } from "./Terrain/Hills.mjs";
+import { addTreesToGround, createHillsBufferGeometry } from "./Terrain/Hills.mjs";
 const orbitControls = true;
 
 function createGround() {
@@ -74,7 +73,6 @@ function initLevel() {
     new MovingPlatform(15, 20, 20, 30, 30, 30, 20, 1, 15);
     new Cylinder(25, 0, 2, 5, 5);
     new GolfHole(51.2, -6, 0, 1.8, 1, 2.1, 64, 12, 51.2, -5.9, 0, 1, 2, 2)
-    createPineTree(0, 20, 0);
     flag(0,2,2);
 }
 
@@ -105,13 +103,16 @@ function initGame() {
     // Create ball and attach to window
     createBall(5, 30, 0);
 
-    createHillsBufferGeometry(10, 10, 100, 5, 20);
+    let groundMesh = createHillsBufferGeometry(10, 10, 100, 5, 20);
     // Init slider and buttons for firing the ball
-
+    addTreesToGround(groundMesh, 100);
     // Init orbit controls
     if (orbitControls) {
         controls = new OrbitControls(engine.camera, engine.canvas2d);
         controls.target = ballMesh.position;
+        controls.minDistance= 9;
+        controls.maxDistance = 30;
+        controls.distance = 3;
     }
 
     // Setup camera position
@@ -151,8 +152,7 @@ function initGame() {
         const currentVelocities = { x: ballBody.velocity.x, y: ballBody.velocity.y, z: ballBody.velocity.z };
 
         if (checkBounce({ x: lastDX, y: lastDY, z: lastDZ }, currentVelocities)) {
-            console.log("TUP");
-            createNewEmitter(ballBody.position.x, ballBody.position.y, ballBody.position.z, "burst", {particle_cnt: 50, particle_lifetime: {min:0.2, max:0.5}, power: 0.05, fired: false})
+            createNewEmitter(ballBody.position.x, ballBody.position.y, ballBody.position.z, "burst", {particle_cnt: 20, particle_lifetime: {min:0.2, max:0.5}, power: 0.05, fired: false})
             playRandomSoundEffectFall();
         }
         lastDX = currentVelocities.x;
