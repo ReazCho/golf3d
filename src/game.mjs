@@ -21,7 +21,6 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import {flag} from "./BuildingBlock_no_collision/flag.mjs"
 const orbitControls = true;
 
-let oldBallPosition = { x: 0, y: 0, z: 0 };
 
 function createGround() {
     // Create ground plane
@@ -100,13 +99,13 @@ function initGame() {
         menuConfig.gameStarted = true;
         initSoundEvents();
         initLevel();
+        firingTheBall.initUI();
     }
     // Create ball and attach to window
-    createBall(11, 30, 0);
+    createBall(5, 30, 0);
 
     createHillsBufferGeometry(10, 10, 100, 5, 20);
     // Init slider and buttons for firing the ball
-    firingTheBall.initUI();
 
     // Init orbit controls
     if (orbitControls) {
@@ -174,33 +173,15 @@ function initGame() {
 
 
 function make_the_ball_static_when_is_not_moving() {
-    if (time % 100 == 0) {
-        let error = 0, bx = Math.abs(ballMesh.position.x), by = Math.abs(ballMesh.position.y), bz = Math.abs(ballMesh.position.z);
-
-        if (bx - obx >= 0) {
-            error = bx - obx;
-        } else {
-            error = bx + obx;
+    if (time % 10 == 0) {
+        if (ballBody.velocity.length() < 0.5) {
+            //raycast to know if the ball is on the ground and should actually stop
+            let ray = new CANNON.Ray(new CANNON.Vec3(ballBody.position.x,ballBody.position.y-1.1,ballBody.position.z), new CANNON.Vec3(ballBody.position.x,ballBody.position.y-1.2,ballBody.position.z));
+            if(ray.intersectWorld(engine.cannonjs_world,{})){
+                ballBody.type = CANNON.Body.STATIC;
+                firingTheBall.isBallShot = false;
+            }
         }
-
-        if (by - oby >= 0) {
-            error += by - oby;
-        } else {
-            error += by + oby;
-        }
-
-        if (bz - obz >= 0) {
-            error += bz - obz;
-        } else {
-            error += bz + obz;
-        }
-
-        if (error < 1) {
-            ballBody.type = CANNON.Body.STATIC;
-            oldBallPosition = { x: 0, y: 0, z: 0 };
-            firingTheBall.isBallShot = false;
-        }
-
         obx = Math.abs(ballMesh.position.x);
         oby = Math.abs(ballMesh.position.y);
         obz = Math.abs(ballMesh.position.z);
