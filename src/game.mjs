@@ -21,8 +21,8 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { forEach } from "lodash";
 import { UIAddObj } from './LevelEditor/ObjectAdd.mjs'
 import {flag} from "./BuildingBlock_no_collision/flag.mjs"
+import { createHillsBufferGeometry } from "./Terrain/Hills.mjs";
 const orbitControls = true;
-
 
 function createGround() {
     // Create ground plane
@@ -62,7 +62,6 @@ function initLights() {
 }
 
 function initLevel() {
-    // createGround();
     const block1 = new BuildingBlock(0, 5, 0, 20, 10, 20);
     // const block2 = new BuildingBlock(20, 0, 0, 50, 10, 20);
 
@@ -106,7 +105,7 @@ function initGame() {
     // Create ball and attach to window
     createBall(5, 30, 0);
 
-    // createHillsBufferGeometry(10, 10, 100, 5, 20);
+    createHillsBufferGeometry(10, 10, 100, 5, 20);
     // Init slider and buttons for firing the ball
 
     // Init orbit controls

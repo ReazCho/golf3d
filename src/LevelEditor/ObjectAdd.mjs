@@ -5,43 +5,23 @@ import { GolfHole } from '../BuildingBlocks/GolfHole.mjs';
 import { MovingPlatform } from '../BuildingBlocks/MovingPlatform.mjs';
 import { createBall } from '../ball.mjs';
 import { Ramp } from '../BuildingBlocks/Ramp.mjs';
-import { supabase } from '../../supa.config.js';
-import { UIOM } from './ObjectMovement.mjs'
-
 let objDimentions = [];
 
-async function AddObj(id) {
-    try {
-        const { data, error } = await supabase
-            .from('obj_dimensions')
-            .select('x, y, z, w, h, d, t')
-            .eq('id', id)
-            .single();
+async function AddObj(obj) {
+    const { x, y, z, w, h, d, t } = obj;
 
-        if (error) {
-            console.error('Error fetching data: ', error);
-            return;
-        }
-
-        const { x, y, z, w, h, d, t } = data;
-
-        if (t == 'Cube')
-            new BuildingBlock(x, y, z, w, h, d);
-        else if (t == 'Cylinder')
-            new Cylinder(x, y, z, w, h, d);
-        else if (t == 'Ramp')
-            new Ramp(x, y, z, w, h, d);
-        else if (t == 'Moving platform')
-            new MovingPlatform(x, y, z, w, h, d, 1500, 200);
-        else if (t == 'Hole')
-            new GolfHole(x, y, z, w, h, d);
-        else if (t == 'Ball')
-            createBall(x, y, z);
-
-        console.log(`Object added with id ${id}:`, { x, y, z, w, h, d, t });
-    } catch (error) {
-        console.error('Unexpected error: ', error);
-    }
+    if (t == 'Cube')
+        new BuildingBlock(x, y, z, w, h, d);
+    else if (t == 'Cylinder')
+        new Cylinder(x, y, z, w, h, d);
+    else if (t == 'Ramp')
+        new Ramp(x, y, z, w, h, d);
+    else if (t == 'Moving platform')
+        new MovingPlatform(x, y, z, w, h, d, 1500, 200);
+    else if (t == 'Hole')
+        new GolfHole(x, y, z, w, h, d);
+    else if (t == 'Ball')
+        createBall(x, y, z);
 }
 
 function UIAddObj() {
@@ -64,7 +44,8 @@ function UIAddObj() {
 
     popup.textContent = 'Choose the object you want to add:';
     popup.style.position = 'absolute';
-    popup.style.right = '150px';
+    popup.style.right = '0px';
+    popup.style.top = '300px';
     popup.style.display = 'flex';
     popup.style.flexDirection = 'column';
     document.body.appendChild(popup);
@@ -137,25 +118,26 @@ function UIAddObj() {
         };
 
         objDimentions.push(newObj);
-        console.log(objDimentions);
+        AddObj(newObj);
 
-        const { data, error } = await supabase
-            .from('obj_dimensions')
-            .insert([newObj])
-            .select();
+        // CORS error
+        // const { data, error } = await supabase
+        //     .from('obj_dimensions')
+        //     .insert([newObj])
+        //     .select();
 
-        if (error) {
-            console.error('Error inserting data: ', error);
-        } else {
-            console.log('Data inserted successfully: ', data);
-            if (data && data.length > 0) {
-                const insertedId = data[0].id;
-                AddObj(insertedId);
-            }
-        }
+        // if (error) {
+        //     console.error('Error inserting data: ', error);
+        // } else {
+        //     console.log('Data inserted successfully: ', data);
+        //     if (data && data.length > 0) {
+        //         const insertedId = data[0].id;
+        //         AddObj(insertedId);
+        //     }
+        // }
     };
 
-    UIOM()
+    // UIOM()
 }
 
 export { UIAddObj, objDimentions };
