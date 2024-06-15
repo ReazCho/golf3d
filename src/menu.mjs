@@ -36,21 +36,26 @@ class Menu {
     constructor(){
     }
     draw(){
-        //play button
-        createButton("Play",275,175,250,100,"red",50,"white");
-        //skins button - no functionality
-        createButton("Skins",275,300,250,100,"red",50,"white");
-        //music toggle button - should be replaced with icon
-        if(menuConfig.musicEnabled){
-            createButton("Toggle music",175,475,200,75,"red",30,"white");
-        }else{
-            createButton("Toggle music",175,475,200,75,"grey",30,"white");
-        }
-        //SFX toggle button - should be replaced with icon
-        if(menuConfig.sfxEnabled){
-            createButton("Toggle SFX",425,475,200,75,"red",30,"white");
-        }else{
-            createButton("Toggle SFX",425,475,200,75,"grey",30,"white");
+        if (!menuConfig.gameStarted) {
+            //play button
+            createButton("Play", 275, 175, 250, 100, "red", 50, "white");
+            //skins button - no functionality
+            createButton("Skins", 275, 300, 250, 100, "red", 50, "white");
+            //music toggle button - should be replaced with icon
+            if (menuConfig.musicEnabled) {
+                createButton("Toggle music", 175, 475, 200, 75, "red", 30, "white");
+            } else {
+                createButton("Toggle music", 175, 475, 200, 75, "grey", 30, "white");
+            }
+            //SFX toggle button - should be replaced with icon
+            if (menuConfig.sfxEnabled) {
+                createButton("Toggle SFX", 425, 475, 200, 75, "red", 30, "white");
+            } else {
+                createButton("Toggle SFX", 425, 475, 200, 75, "grey", 30, "white");
+            }
+        } else if(isWinner) {
+            // TODO: for some reason - this does nothing
+            createButton("You Win", 275, 175, 250, 100, "red", 50, "white");
         }
     }
     startSimulation(){
@@ -68,9 +73,10 @@ class Menu {
         menuConfig.sfxEnabled = !menuConfig.sfxEnabled
     }
 }
-
+let isWinner = false;
 let menuConfig = {
     gameStarted: false,
+    setGameWon: ()=>{isWinner = true;},
     musicEnabled: true,
     sfxEnabled: true,
     showMenu: true

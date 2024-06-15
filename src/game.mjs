@@ -18,7 +18,6 @@ import { areColliding } from "./utils.mjs";
 // import { createHillsBufferGeometry } from "./Terrain/Hills.mjs";
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { forEach } from "lodash";
-import { UIAddObj } from './LevelEditor/ObjectAdd.mjs'
 import {flag} from "./BuildingBlock_no_collision/flag.mjs"
 import { addTreesToGround, createHillsBufferGeometry } from "./Terrain/Hills.mjs";
 const orbitControls = true;
@@ -72,7 +71,7 @@ function initLevel() {
 
     new MovingPlatform(15, 20, 20, 30, 30, 30, 20, 1, 15);
     new Cylinder(25, 0, 2, 5, 5);
-    new GolfHole(51.2, -6, 0, 1.8, 1, 2.1, 64, 12, 51.2, -5.9, 0, 1, 2, 2)
+    new GolfHole(51.2, -6, 0, 1.8, 1, 2.1, 64, 12, 51.2, -5.9, 0, 1, 2, 2, ballBody)
     flag(0,2,2);
 }
 
@@ -222,8 +221,6 @@ function show_the_ball_direction() {
         }
     }
 };
-
-UIAddObj()
 
 let game = {
     init: initGame

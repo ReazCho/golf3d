@@ -32,6 +32,7 @@ function isFunction(f) {
 
 function createButton(text,x,y,w,h,buttonCol,fontsize,textCol, font = "Arial"){
     //Create background
+    console.log("Asd")
     engine.context2d.fillStyle = buttonCol;
     engine.context2d.fillRect(x,y,w,h);
     //Create text
