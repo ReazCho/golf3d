@@ -16,8 +16,10 @@ import { createBall, ballMesh, ballBody,deleteBall } from "./ball.mjs";
 import { createNewEmitter, updateEmitters } from "./BuildingBlocks/Particle.mjs";
 import { Menu, initMenu, menuConfig } from "./menu.mjs";
 import { areColliding } from "./utils.mjs";
-import { createHillsBufferGeometry } from "./Terrain/Hills.mjs";
+// import { createHillsBufferGeometry } from "./Terrain/Hills.mjs";
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { forEach } from "lodash";
+import { UIAddObj } from './LevelEditor/ObjectAdd.mjs'
 import {flag} from "./BuildingBlock_no_collision/flag.mjs"
 const orbitControls = true;
 
@@ -104,7 +106,7 @@ function initGame() {
     // Create ball and attach to window
     createBall(5, 30, 0);
 
-    createHillsBufferGeometry(10, 10, 100, 5, 20);
+    // createHillsBufferGeometry(10, 10, 100, 5, 20);
     // Init slider and buttons for firing the ball
 
     // Init orbit controls
@@ -221,6 +223,8 @@ function show_the_ball_direction() {
         }
     }
 };
+
+UIAddObj()
 
 let game = {
     init: initGame

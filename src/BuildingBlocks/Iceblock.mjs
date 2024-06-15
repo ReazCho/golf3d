@@ -24,4 +24,4 @@ class Ice{
         engine.cannonjs_world.addBody(cubeBody);
     }
 }
-export {Ice}
+export {Iceblock}
