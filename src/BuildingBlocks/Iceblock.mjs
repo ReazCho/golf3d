@@ -15,7 +15,7 @@ class Ice{
         // Block physics and collision detection
         const groundMaterialPhysics = new CANNON.Material(); // Create a new material
         groundMaterialPhysics.restitution = 0.5; // Set the restitution coefficient to 0.5 (adjust as needed)
-        groundMaterialPhysics.friction = 0.5;
+        groundMaterialPhysics.friction = 0.1;
         var cubeShape = new CANNON.Box(new CANNON.Vec3(width/2, height/2, depth/2));
         var cubeBody = new CANNON.Body({ mass: 0, material: groundMaterialPhysics});
         cubeBody.addShape(cubeShape);
@@ -24,4 +24,4 @@ class Ice{
         engine.cannonjs_world.addBody(cubeBody);
     }
 }
-export {Iceblock}
+export {Ice}

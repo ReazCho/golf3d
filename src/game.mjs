@@ -20,6 +20,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { forEach } from "lodash";
 import {flag} from "./BuildingBlock_no_collision/flag.mjs"
 import { addTreesToGround, createHillsBufferGeometry } from "./Terrain/Hills.mjs";
+import { Ice } from "./BuildingBlocks/Iceblock.mjs";
 const orbitControls = true;
 
 function createGround() {
@@ -67,12 +68,17 @@ function initLevel() {
     new Ramp(0, 9.3, 0, 20, 0, 0);
     new Ramp(16.5, 2.5, 0, 20, Math.PI, Math.PI / 4);
     new Ramp(33, -5.2, 0, 20, 0, 0);
+    new Ramp(53, -5.2, 0, 20, 0, 0);
 
-    // new BuildingBlock(30, -10, 0, 40, 10, 20);
 
-    // new MovingPlatform(15, 20, 20, 30, 30, 30, 20, 1, 15);
+    new MovingPlatform(73, -5.2, 0, 133, 25.2, 0, 20, 1, 15);
+
+    new BuildingBlock(153, 20.2, 0, 20, 10, 20);
     // new Cylinder(25, 0, 2, 5, 5);
-    // new GolfHole(51.2, -6, 0, 1.8, 1, 2.1, 64, 12, 51.2, -5.9, 0, 1, 2, 2, ballBody)
+    new Ice(153, 22.8, -60, 20, 5, 100);
+
+    new BuildingBlock(153, 20.2, -120, 20, 10, 20);
+    new GolfHole(153, 26.2, -120, 1.8, 1, 2.1, 64, 12, 51.2, -5.9, 0, 1, 2, 2, ballBody)
     let f1 = flag(-14,9,-20);
     f1.rotation.y = 30;
 }
