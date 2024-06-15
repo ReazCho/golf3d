@@ -18,7 +18,7 @@ import { Menu, initMenu, menuConfig } from "./menu.mjs";
 import { areColliding } from "./utils.mjs";
 import { createHillsBufferGeometry } from "./Terrain/Hills.mjs";
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { forEach } from "lodash";
+import {flag} from "./BuildingBlock_no_collision/flag.mjs"
 const orbitControls = true;
 
 let oldBallPosition = { x: 0, y: 0, z: 0 };
@@ -75,6 +75,7 @@ function initLevel() {
     new Cylinder(25, 0, 2, 5, 5);
     new GolfHole(51.2, -6, 0, 1.8, 1, 2.1, 64, 12, 51.2, -5.9, 0, 1, 2, 2)
     createPineTree(0, 20, 0);
+    flag(0,2,2);
 }
 
 let ballDirectionMesh = [];
